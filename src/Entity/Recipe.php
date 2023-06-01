@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Recipe\CreateRecipe;
-use App\Controller\Recipe\CreateShoppingList;
 use App\Controller\Recipe\FavouriteRecipes;
 use App\Controller\Recipe\MyRecipes;
 use App\Controller\Recipe\PostImageRecipe;
@@ -30,14 +29,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'method' => 'POST',
             'path' => 'recipes/{recipeId}/users/{userId}',
             'controller' => "App\Controller\Recipe\SaveRecipe::saveRecipe",
-        ],
-        'create_shoppinglist' => [
-            'method' => 'POST',
-            'path' => 'recipes/createShoppingList',
-            'controller' => CreateShoppingList::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['recipe:shoppinglist']],
-            'read' => false,
         ],
     ],
 
@@ -114,7 +105,7 @@ class Recipe
     private ?User $postedByUser = null;
 
     #[ORM\OneToMany(targetEntity: Ingredient::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['recipe:item:read', 'recipe:put', 'recipe:read', 'recipe:shoppinglist'])]
+    #[Groups(['recipe:item:read', 'recipe:put', 'recipe:read'])]
     private $ingredients;
 
     #[ORM\OneToMany(targetEntity: Step::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]

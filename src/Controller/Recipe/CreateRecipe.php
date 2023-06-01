@@ -35,33 +35,43 @@ class CreateRecipe extends AbstractController
 
     $newRecipe = $this->rr->find($data->getId());
     foreach ($recetteCreateDto->steps as $recette) {
-      $step = new Step();
-      $step->setStepIndex($recette["stepIndex"]);
-      $step->setDescription(($recette["description"]));
-      $step->setRecipe($newRecipe);
-
-      $this->em->persist($step);
+      $this->createStep($recette, $newRecipe);
     }
 
     foreach ($recetteCreateDto->ingredients as $recette) {
-      $ingredient = new Ingredient();
-      $ingredient->setQuantity($recette["quantity"]);
-      $ingredient->setLabel(($recette["label"]));
-      $ingredient->setUnit($this->ur->find($recette["unit"]["id"]));
-      $ingredient->setRecipe($newRecipe);
-
-      if (!$this->idr->findOneBy(["name" => $recette["label"]])) {
-        $newIng = new IngredientData();
-        $newIng->setName($recette["label"]);
-        $newIng->setType($this->itr->findOneBy(["label" => "unknown"]));
-        $this->em->persist($newIng);
-      }
-
-      $this->em->persist($ingredient);
+      $this->createIngredient($recette, $newRecipe);
     }
 
     $this->em->flush();
 
     return $newRecipe;
+  }
+
+  public function createStep($recette, $newRecipe)
+  {
+    $step = new Step();
+    $step->setStepIndex($recette["stepIndex"]);
+    $step->setDescription(($recette["description"]));
+    $step->setRecipe($newRecipe);
+
+    $this->em->persist($step);
+  }
+
+  public function createIngredient($recette, $newRecipe)
+  {
+    $ingredient = new Ingredient();
+    $ingredient->setQuantity($recette["quantity"]);
+    $ingredient->setLabel(($recette["label"]));
+    $ingredient->setUnit($this->ur->find($recette["unit"]["id"]));
+    $ingredient->setRecipe($newRecipe);
+
+    if (!$this->idr->findOneBy(["name" => $recette["label"]])) {
+      $newIng = new IngredientData();
+      $newIng->setName($recette["label"]);
+      $newIng->setType($this->itr->findOneBy(["label" => "unknown"]));
+      $this->em->persist($newIng);
+    }
+
+    $this->em->persist($ingredient);
   }
 }
