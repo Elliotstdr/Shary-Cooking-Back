@@ -7,6 +7,7 @@ use App\Controller\Recipe\CreateRecipe;
 use App\Controller\Recipe\FavouriteRecipes;
 use App\Controller\Recipe\MyRecipes;
 use App\Controller\Recipe\PostImageRecipe;
+use App\Controller\Recipe\PutRecipe;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -38,7 +39,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ],
         'put' => [
             'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['recipe:put']]
+            'denormalization_context' => ['groups' => ['recipe:put']],
+            'controller' => PutRecipe::class,
         ],
         'delete',
         'favourite_recipe' => [

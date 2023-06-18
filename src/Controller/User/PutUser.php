@@ -43,8 +43,8 @@ class PutUser extends AbstractController
       }
     }
 
-    $userToModify->setLastname($putUserDto->name);
-    $userToModify->setName($putUserDto->lastname);
+    $userToModify->setLastname($putUserDto->lastname);
+    $userToModify->setName($putUserDto->name);
     $userToModify->setEmail($putUserDto->email);
 
     $em->persist($userToModify);

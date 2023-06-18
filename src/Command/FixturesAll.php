@@ -34,7 +34,7 @@ class FixturesAll extends Command
 
     $regimes = ["Omnivore", "Végétarien", "Végétalien", "Végan"];
     $types = ["Entrée", "Plat", "Dessert", "Apéritif", "Goûter"];
-    $units = ["milligramme", "gramme", "kilogramme", "millilitre", "centilitre", "litre", "cc", "cs", "unité"];
+    $units = ["milligrammes", "grammes", "kilogramme", "millilitres", "centilitres", "litre", "cc", "cs", "unité", "sachet"];
     $ingTypes = ["fruit", "légume", "viande", "poisson", "crustacé", "épice", "condiment", "fruit sec", "produit laitier", "féculent", "herbe", "boisson", "produit transformé", "légumineuse", "unknown"];
 
     foreach ($regimes as $regime) {

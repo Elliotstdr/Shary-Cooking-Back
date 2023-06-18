@@ -34,12 +34,12 @@ class CreateRecipe extends AbstractController
     $this->em->flush();
 
     $newRecipe = $this->rr->find($data->getId());
-    foreach ($recetteCreateDto->steps as $recette) {
-      $this->createStep($recette, $newRecipe);
+    foreach ($recetteCreateDto->steps as $step) {
+      $this->createStep($step, $newRecipe);
     }
 
-    foreach ($recetteCreateDto->ingredients as $recette) {
-      $this->createIngredient($recette, $newRecipe);
+    foreach ($recetteCreateDto->ingredients as $ingredient) {
+      $this->createIngredient($ingredient, $newRecipe);
     }
 
     $this->em->flush();
@@ -47,27 +47,27 @@ class CreateRecipe extends AbstractController
     return $newRecipe;
   }
 
-  public function createStep($recette, $newRecipe)
+  public function createStep($stepItem, $newRecipe)
   {
     $step = new Step();
-    $step->setStepIndex($recette["stepIndex"]);
-    $step->setDescription(($recette["description"]));
+    $step->setStepIndex($stepItem["stepIndex"]);
+    $step->setDescription(($stepItem["description"]));
     $step->setRecipe($newRecipe);
 
     $this->em->persist($step);
   }
 
-  public function createIngredient($recette, $newRecipe)
+  public function createIngredient($ingredientItem, $newRecipe)
   {
     $ingredient = new Ingredient();
-    $ingredient->setQuantity($recette["quantity"]);
-    $ingredient->setLabel(($recette["label"]));
-    $ingredient->setUnit($this->ur->find($recette["unit"]["id"]));
+    $ingredient->setQuantity($ingredientItem["quantity"]);
+    $ingredient->setLabel(($ingredientItem["label"]));
+    $ingredient->setUnit($this->ur->find($ingredientItem["unit"]["id"]));
     $ingredient->setRecipe($newRecipe);
 
-    if (!$this->idr->findOneBy(["name" => $recette["label"]])) {
+    if (!$this->idr->findOneBy(["name" => $ingredientItem["label"]])) {
       $newIng = new IngredientData();
-      $newIng->setName($recette["label"]);
+      $newIng->setName($ingredientItem["label"]);
       $newIng->setType($this->itr->findOneBy(["label" => "unknown"]));
       $this->em->persist($newIng);
     }
