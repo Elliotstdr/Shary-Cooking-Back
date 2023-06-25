@@ -23,11 +23,11 @@ class Step
     private ?Recipe $recipe = null;
 
     #[ORM\Column(length: 10000)]
-    #[Groups(['step:read', 'recipe:item:read', 'recipe:put'])]
+    #[Groups(['step:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['step:read', 'recipe:item:read', 'recipe:put'])]
+    #[Groups(['step:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
     private ?int $stepIndex = null;
 
     public function getId(): ?int

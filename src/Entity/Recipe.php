@@ -48,7 +48,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'path' => 'favourites/user/{id}',
             'controller' => FavouriteRecipes::class,
             'read' => false,
-            'normalization_context' => ['groups' => ['recipe:read']]
         ],
         'user_recipe' => [
             'method' => 'GET',
@@ -111,7 +110,7 @@ class Recipe
     private $ingredients;
 
     #[ORM\OneToMany(targetEntity: Step::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['recipe:item:read', 'recipe:put'])]
+    #[Groups(['recipe:item:read', 'recipe:put', 'recipe:read'])]
     private Collection $steps;
 
     #[ORM\Column(length: 255, nullable: true)]

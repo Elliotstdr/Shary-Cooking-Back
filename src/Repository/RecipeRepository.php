@@ -43,12 +43,8 @@ class RecipeRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('r')
             ->innerJoin('r.savedByUsers', 'sbu')
-            ->join('r.type', 't')
-            ->join('r.regime', 're')
-            ->join('r.postedByUser', 'pbu')
             ->where("sbu.id = :id")
             ->setParameter(':id', $id)
-            ->select('r, t, re, pbu')
             ->getQuery()
             ->getArrayResult();
     }
@@ -56,12 +52,8 @@ class RecipeRepository extends ServiceEntityRepository
     public function getMyRecipes(int $id)
     {
         return $this->createQueryBuilder('r')
-            // ->join('r.type', 't')
-            // ->join('r.regime', 're')
-            // ->join('r.postedByUser', 'pbu')
             ->where("r.postedByUser = :id")
             ->setParameter(':id', $id)
-            // ->select('r, t, re', 'pbu')
             ->getQuery()
             ->getArrayResult();
     }

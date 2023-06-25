@@ -17,6 +17,11 @@ class FavouriteRecipes extends AbstractController
   public function __invoke(int $id)
   {
     $data = $this->rr->getFavouriteRecipes($id);
-    return new JsonResponse($data);
+
+    $response = [];
+    foreach ($data as $element) {
+      $response[] = $this->rr->find($element["id"]);
+    }
+    return $response;
   }
 }
