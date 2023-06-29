@@ -2,7 +2,6 @@
 
 namespace App\Controller\User;
 
-use App\Dto\CreateAccountDto;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -10,7 +9,6 @@ use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class CreateAccount extends AbstractController
 {
@@ -20,16 +18,16 @@ class CreateAccount extends AbstractController
   ) {
   }
 
-  public function __invoke(User $data, SerializerInterface $serializer, Request $request)
+  public function __invoke(User $data, Request $request)
   {
-    $accountDto = $serializer->deserialize($request->getContent(), CreateAccountDto::class, 'json');
+    $requestData = json_decode($request->getContent(), true);
 
     $factory = new PasswordHasherFactory([
       'common' => ['algorithm' => 'bcrypt'],
     ]);
     $passwordHasher = $factory->getPasswordHasher('common');
 
-    if (!$passwordHasher->verify($this->getParameter('secretKey'), $accountDto->secretKey)) {
+    if (!$passwordHasher->verify($this->getParameter('secretKey'), $requestData["secretKey"])) {
       throw new Exception('La clef secrète que vous avez renseigné est incorrecte.');
     }
 

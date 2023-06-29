@@ -2,12 +2,17 @@
 
 namespace App\Controller\Recipe;
 
-use App\Dto\CreateRecipeDto;
 use App\Entity\Recipe;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
+
+class StepsAndIngredientsPut
+{
+  public $steps;
+  public $ingredients;
+}
 
 class PutRecipe extends AbstractController
 {
@@ -19,7 +24,7 @@ class PutRecipe extends AbstractController
 
   public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
   {
-    $recettePutDto = $serializer->deserialize($request->getContent(), CreateRecipeDto::class, 'json');
+    $recettePutDto = $serializer->deserialize($request->getContent(), StepsAndIngredientsPut::class, 'json');
     $this->em->persist($data);
 
     foreach ($data->getIngredients() as $ingredient) {

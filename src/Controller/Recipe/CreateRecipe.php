@@ -2,7 +2,6 @@
 
 namespace App\Controller\Recipe;
 
-use App\Dto\CreateRecipeDto;
 use App\Entity\Ingredient;
 use App\Entity\IngredientData;
 use App\Entity\Recipe;
@@ -15,6 +14,12 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
+
+class StepsAndIngredients
+{
+  public $steps;
+  public $ingredients;
+}
 
 class CreateRecipe extends AbstractController
 {
@@ -29,9 +34,10 @@ class CreateRecipe extends AbstractController
 
   public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
   {
-    $recetteCreateDto = $serializer->deserialize($request->getContent(), CreateRecipeDto::class, 'json');
     $this->em->persist($data);
     $this->em->flush();
+
+    $recetteCreateDto = $serializer->deserialize($request->getContent(), StepsAndIngredients::class, 'json');
 
     $newRecipe = $this->rr->find($data->getId());
     foreach ($recetteCreateDto->steps as $step) {

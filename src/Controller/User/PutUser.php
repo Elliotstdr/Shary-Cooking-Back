@@ -2,8 +2,6 @@
 
 namespace App\Controller\User;
 
-use App\Dto\PutUserDto;
-use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -11,7 +9,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class PutUser extends AbstractController
 {
@@ -19,9 +16,9 @@ class PutUser extends AbstractController
   {
   }
 
-  public function __invoke(Request $request, int $id, EntityManagerInterface $em, UserRepository $ur, SerializerInterface $serializer)
+  public function __invoke(Request $request, int $id, EntityManagerInterface $em, UserRepository $ur)
   {
-    $putUserDto = $serializer->deserialize($request->getContent(), PutUserDto::class, 'json');
+    $requestData = json_decode($request->getContent(), true);
     $userToModify = $ur->find($id);
     $factory = new PasswordHasherFactory([
       'common' => ['algorithm' => 'bcrypt'],
@@ -29,24 +26,23 @@ class PutUser extends AbstractController
     $passwordHasher = $factory->getPasswordHasher('common');
 
     if (
-      $userToModify->getEmail() !== $putUserDto->email &&
-      $ur->findOneBy(['email' => $putUserDto->email])
+      $userToModify->getEmail() !== $requestData["email"] &&
+      $ur->findOneBy(['email' => $requestData["email"]])
     ) {
       throw new Exception('Cette adresse email est déjà utilisée pour un autre compte');
     }
 
-    if ($putUserDto->oldPassword) {
-      if (!$passwordHasher->verify($userToModify->getPassword(), $putUserDto->oldPassword)) {
-        throw new Exception('L\'ancien mot de passe sont incorrect');
+    if ($requestData["oldPassword"]) {
+      if (!$passwordHasher->verify($userToModify->getPassword(), $requestData["oldPassword"])) {
+        throw new Exception('L\'ancien mot de passe est incorrect');
       } else {
-        $userToModify->setPassword($passwordHasher->hash($putUserDto->password));
+        $userToModify->setPassword($passwordHasher->hash($requestData["password"]));
       }
     }
 
-    $userToModify->setLastname($putUserDto->lastname);
-    $userToModify->setName($putUserDto->name);
-    $userToModify->setEmail($putUserDto->email);
-
+    $userToModify->setLastname($requestData["lastname"]);
+    $userToModify->setName($requestData["name"]);
+    $userToModify->setEmail($requestData["email"]);
     $em->persist($userToModify);
     $em->flush();
 
