@@ -32,7 +32,7 @@ class PutUser extends AbstractController
       throw new Exception('Cette adresse email est déjà utilisée pour un autre compte');
     }
 
-    if ($requestData["oldPassword"]) {
+    if (isset($requestData["oldPassword"])) {
       if (!$passwordHasher->verify($userToModify->getPassword(), $requestData["oldPassword"])) {
         throw new Exception('L\'ancien mot de passe est incorrect');
       } else {
