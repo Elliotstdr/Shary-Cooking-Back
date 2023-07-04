@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\User\CreateAccount;
 use App\Controller\User\LoginCheck;
+use App\Controller\User\MailController;
 use App\Controller\User\PostImageUser;
 use App\Controller\User\PutUser;
 use App\Repository\UserRepository;
@@ -34,6 +35,13 @@ use Symfony\Component\HttpFoundation\File\File;
             'input_formats' => ['json' => ['application/json']],
             'normalization_context' => ['groups' => ['user:read', 'recipe:read', 'type:read', 'regime:read']],
             'denormalization_context' => ['groups' => ['user:login']]
+        ],
+        'send_report' => [
+            'method' => 'POST',
+            'path' => 'users/sendReport',
+            'controller' => MailController::class,
+            'input_formats' => ['json' => ['application/json']],
+            'read' => false,
         ],
     ],
     itemOperations: [
