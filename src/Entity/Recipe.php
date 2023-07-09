@@ -120,6 +120,10 @@ class Recipe
     #[Groups(['recipe:image:upload'])]
     private ?File $image = null;
 
+    #[ORM\Column(nullable: false)]
+    #[Groups(['recipe:read', 'recipe:write', 'recipe:put'])]
+    private ?\DateTimeImmutable $createdAt = null;
+
     public function __construct()
     {
         $this->savedByUsers = new ArrayCollection();
@@ -290,6 +294,18 @@ class Recipe
     public function setImage(File $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }
