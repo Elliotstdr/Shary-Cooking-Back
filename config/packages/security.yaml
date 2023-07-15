@@ -5,15 +5,31 @@ security:
       algorithm: "auto"
   # https://symfony.com/doc/current/security.html#loading-the-user-the-user-provider
   providers:
-    users_in_memory: { memory: null }
+    # users_in_memory: { memory: null }
+    # Start JWT
+    users:
+      entity:
+        class: App\Entity\User
+        property: email
+    # End JWT
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
       lazy: true
-      provider: users_in_memory
-
+      # provider: users_in_memory
+      # Start JWT
+      provider: users
+      stateless: true
+      json_login:
+        check_path: auth
+        username_path: email
+        password_path: password
+        success_handler: lexik_jwt_authentication.handler.authentication_success
+        failure_handler: lexik_jwt_authentication.handler.authentication_failure
+      jwt: ~
+      # End JWT
       # activate different ways to authenticate
       # https://symfony.com/doc/current/security.html#the-firewall
 
@@ -23,8 +39,15 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    # - { path: ^/profile, roles: ROLE_USER }
+    # Start JWT
+    - { path: ^/auth, roles: PUBLIC_ACCESS }
+    - { path: ^/api/users/createAccount, roles: PUBLIC_ACCESS }
+    - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/recipes, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/ingredients, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/steps, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api, roles: PUBLIC_ACCESS }
+    # End JWT
 
 when@test:
   security:

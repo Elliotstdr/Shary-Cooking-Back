@@ -1,9 +1,15 @@
 api_platform:
+  enable_docs: false
   mapping:
     paths: ["%kernel.project_dir%/src/Entity"]
   patch_formats:
     json: ["application/merge-patch+json"]
   swagger:
     versions: [3]
+    # JWT Token
+    api_keys:
+      JWT:
+        name: Authorization
+        type: header
   defaults:
     pagination_enabled: false

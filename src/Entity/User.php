@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\User\CreateAccount;
 use App\Controller\User\LoginCheck;
 use App\Controller\User\MailController;
@@ -18,12 +20,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\HttpFoundation\File\File;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiFilter(SearchFilter::class, properties: [
+    'email' => 'exact'
+])]
 #[ApiResource(
     collectionOperations: [
         'get' => [
             'normalization_context' => ['groups' => ['user:read']]
         ],
-        'post' => [
+        'create_account' => [
+            'method' => 'POST',
+            'path' => 'users/createAccount',
             'controller' => CreateAccount::class,
             'input_formats' => ['json' => ['application/json']],
             'denormalization_context' => ['groups' => ['user:write']]
