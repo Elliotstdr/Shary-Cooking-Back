@@ -42,6 +42,8 @@ security:
     # Start JWT
     - { path: ^/auth, roles: PUBLIC_ACCESS }
     - { path: ^/api/users/createAccount, roles: PUBLIC_ACCESS }
+    - { path: ^/api/users/mailReset, roles: PUBLIC_ACCESS }
+    - { path: ^/api/users/resetPassword, roles: PUBLIC_ACCESS }
     - { path: ^/api/users, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api/recipes, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api/ingredients, roles: IS_AUTHENTICATED_FULLY }

@@ -10,6 +10,8 @@ use App\Controller\User\LoginCheck;
 use App\Controller\User\MailController;
 use App\Controller\User\PostImageUser;
 use App\Controller\User\PutUser;
+use App\Controller\User\ResetPassword;
+use App\Controller\User\SendResetMail;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,6 +44,22 @@ use Symfony\Component\HttpFoundation\File\File;
             'input_formats' => ['json' => ['application/json']],
             'normalization_context' => ['groups' => ['user:read', 'recipe:read', 'type:read', 'regime:read']],
             'denormalization_context' => ['groups' => ['user:login']]
+        ],
+        'mail_reset' => [
+            'method' => 'POST',
+            'path' => 'users/mailReset',
+            'controller' => SendResetMail::class,
+            'input_formats' => ['json' => ['application/json']],
+            'normalization_context' => ['groups' => ['user:reset']],
+            'denormalization_context' => ['groups' => ['user:reset']]
+        ],
+        'reset_password' => [
+            'method' => 'POST',
+            'path' => 'users/resetPassword',
+            'controller' => ResetPassword::class,
+            'input_formats' => ['json' => ['application/json']],
+            'normalization_context' => ['groups' => ['user:reset']],
+            'denormalization_context' => ['groups' => ['user:reset']]
         ],
         'send_report' => [
             'method' => 'POST',
@@ -89,7 +107,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'user:login', 'recipe:read', 'user:put'])]
+    #[Groups(['user:read', 'user:write', 'user:login', 'recipe:read', 'user:put', 'user:reset'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
