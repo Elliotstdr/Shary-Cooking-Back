@@ -6,7 +6,6 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\Recipe\CreateRecipe;
 use App\Controller\Recipe\FavouriteRecipes;
 use App\Controller\Recipe\MyRecipes;
-use App\Controller\Recipe\PostImageRecipe;
 use App\Controller\Recipe\PutRecipe;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -54,13 +53,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
             'path' => 'recipes/user/{id}',
             'controller' => MyRecipes::class,
             'read' => false,
-        ],
-        'recipe_picture' => [
-            'method' => 'POST',
-            'path' => '/recipes/postImage/{id}',
-            'controller' => PostImageRecipe::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['recipe:image:upload']]
         ]
     ],
     normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']],

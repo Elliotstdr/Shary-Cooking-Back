@@ -8,7 +8,6 @@ use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\User\CreateAccount;
 use App\Controller\User\LoginCheck;
 use App\Controller\User\MailController;
-use App\Controller\User\PostImageUser;
 use App\Controller\User\PutUser;
 use App\Controller\User\ResetPassword;
 use App\Controller\User\SendResetMail;
@@ -80,13 +79,6 @@ use Symfony\Component\HttpFoundation\File\File;
             'read' => false
         ],
         'delete',
-        'recipe_picture' => [
-            'method' => 'POST',
-            'path' => '/users/postImage/{id}',
-            'controller' => PostImageUser::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['user:image:upload']]
-        ]
     ],
     normalizationContext: ['groups' => ['user:read']]
 )]

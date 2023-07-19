@@ -11,6 +11,7 @@ use App\Repository\IngredientDataRepository;
 use App\Repository\IngredientTypeRepository;
 use App\Repository\RecipeRepository;
 use App\Repository\UnitRepository;
+use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,6 +25,7 @@ class CreateRecipe extends AbstractController
     private RecipeRepository $rr,
     private IngredientDataRepository $idr,
     private IngredientTypeRepository $itr,
+    private PostImageService $postImageService,
   ) {
   }
 
@@ -44,6 +46,13 @@ class CreateRecipe extends AbstractController
     }
 
     $this->em->flush();
+
+    if ($recetteCreateDto->image) {
+      $fileName = $this->postImageService->saveFile($recetteCreateDto->image);
+      $data->setImageUrl('/media/' . $fileName);
+      $this->em->persist($data);
+      $this->em->flush();
+    }
 
     return $newRecipe;
   }

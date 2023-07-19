@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,14 +15,18 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 
 class PutUser extends AbstractController
 {
-  public function __construct()
-  {
+  public function __construct(
+    private PostImageService $postImageService,
+    private EntityManagerInterface $em,
+    private UserRepository $ur,
+    private JWTTokenManagerInterface $JWTManager
+  ) {
   }
 
-  public function __invoke(Request $request, int $id, EntityManagerInterface $em, UserRepository $ur, JWTTokenManagerInterface $JWTManager)
+  public function __invoke(Request $request, int $id)
   {
     $requestData = json_decode($request->getContent(), true);
-    $userToModify = $ur->find($id);
+    $userToModify = $this->ur->find($id);
     $factory = new PasswordHasherFactory([
       'common' => ['algorithm' => 'bcrypt'],
     ]);
@@ -29,16 +34,24 @@ class PutUser extends AbstractController
 
     if (
       $userToModify->getEmail() !== $requestData["email"] &&
-      $ur->findOneBy(['email' => $requestData["email"]])
+      $this->ur->findOneBy(['email' => $requestData["email"]])
     ) {
       throw new Exception('Cette adresse email est déjà utilisée pour un autre compte');
+    }
+
+    if (isset($requestData["image"]) && $requestData["image"]) {
+      $fileName = $this->postImageService->saveFile($requestData["image"], 500);
+      $this->postImageService->deleteOldFile($userToModify->getImageUrl());
+
+      $userToModify->setImageUrl('/media/' . $fileName);
+      $this->em->persist($userToModify);
     }
 
     $token = null;
     if ($userToModify->getEmail() !== $requestData["email"]) {
       $tempUser = new User();
       $tempUser->setEmail($requestData["email"]);
-      $token = $JWTManager->create($tempUser);
+      $token = $this->JWTManager->create($tempUser);
     }
 
     if (isset($requestData["oldPassword"])) {
@@ -52,9 +65,9 @@ class PutUser extends AbstractController
     $userToModify->setLastname($requestData["lastname"]);
     $userToModify->setName($requestData["name"]);
     $userToModify->setEmail($requestData["email"]);
-    $em->persist($userToModify);
-    $em->flush();
+    $this->em->persist($userToModify);
+    $this->em->flush();
 
-    return new JsonResponse(["Vos informations ont bien été modifiées", $token]);
+    return new JsonResponse([$userToModify->getImageUrl(), $token]);
   }
 }

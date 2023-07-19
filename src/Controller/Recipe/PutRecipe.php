@@ -4,6 +4,7 @@ namespace App\Controller\Recipe;
 
 use App\Dto\CreateRecipeDto;
 use App\Entity\Recipe;
+use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,6 +15,7 @@ class PutRecipe extends AbstractController
   public function __construct(
     private EntityManagerInterface $em,
     private CreateRecipe $cr,
+    private PostImageService $postImageService,
   ) {
   }
 
@@ -37,6 +39,14 @@ class PutRecipe extends AbstractController
     }
 
     $this->em->flush();
+
+    if ($recettePutDto->image) {
+      $fileName = $this->postImageService->saveFile($recettePutDto->image);
+      $this->postImageService->deleteOldFile($data->getImageUrl());
+      $data->setImageUrl('/media/' . $fileName);
+      $this->em->persist($data);
+      $this->em->flush();
+    }
 
     return $data;
   }

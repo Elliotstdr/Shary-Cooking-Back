@@ -6,4 +6,5 @@ class CreateRecipeDto
 {
   public $steps;
   public $ingredients;
+  public $image;
 }
