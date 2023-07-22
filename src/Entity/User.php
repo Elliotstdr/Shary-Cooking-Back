@@ -116,6 +116,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'savedByUsers')]
     private Collection $savedRecipes;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetPassword = null;
+
     public function __construct()
     {
         $this->savedRecipes = new ArrayCollection();
@@ -240,5 +243,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials()
     {
+    }
+
+    public function getResetPassword(): ?string
+    {
+        return $this->resetPassword;
+    }
+
+    public function setResetPassword(?string $resetPassword): self
+    {
+        $this->resetPassword = $resetPassword;
+
+        return $this;
     }
 }

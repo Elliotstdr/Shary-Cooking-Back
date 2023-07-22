@@ -26,15 +26,16 @@ class ResetPassword extends AbstractController
     $factory = new PasswordHasherFactory([
       'common' => ['algorithm' => 'bcrypt'],
     ]);
-    $passwordHasher = $factory->getPasswordHasher('common');
+    $pHasher = $factory->getPasswordHasher('common');
 
     $user = $this->ur->findOneBy(['email' => $requestData["email"]]);
 
-    if ($user->getPassword() !== $requestData["resetKey"]) {
+    if (!$pHasher->verify($user->getResetPassword(), $requestData["resetKey"])) {
       throw new Exception("La clé de réinitialisation n'est pas correcte");
     }
 
-    $user->setPassword($passwordHasher->hash($requestData["newPassword"]));
+    $user->setResetPassword(null);
+    $user->setPassword($pHasher->hash($requestData["newPassword"]));
     $this->em->persist($user);
     $this->em->flush();
 
