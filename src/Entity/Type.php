@@ -2,20 +2,15 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\TypeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
+#[ApiResource(operations: [new Get(), new GetCollection()])]
 #[ORM\Entity(repositoryClass: TypeRepository::class)]
-#[ApiResource(
-    collectionOperations: [
-        'get'
-    ],
-    itemOperations: [
-        'get'
-    ],
-)]
 class Type
 {
     #[ORM\Id]

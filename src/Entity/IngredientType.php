@@ -2,22 +2,19 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IngredientTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: IngredientTypeRepository::class)]
 #[ApiResource(
-    collectionOperations: [
-        'get' => ['normalization_context' => ['groups' => ['ingtype:read']]]
-    ],
-    itemOperations: [
-        'get'
-    ],
+    operations: [new Get(), new GetCollection(normalizationContext: ['groups' => ['ingtype:read']])]
 )]
+#[ORM\Entity(repositoryClass: IngredientTypeRepository::class)]
 class IngredientType
 {
     #[ORM\Id]

@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\StepRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: StepRepository::class)]
 #[ApiResource]
+#[ORM\Entity(repositoryClass: StepRepository::class)]
 class Step
 {
     #[ORM\Id]

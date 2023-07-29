@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: IngredientRepository::class)]
 #[ApiResource]
+#[ORM\Entity(repositoryClass: IngredientRepository::class)]
 class Ingredient
 {
     #[ORM\Id]

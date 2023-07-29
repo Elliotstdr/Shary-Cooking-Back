@@ -2,9 +2,14 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Controller\User\CreateAccount;
 use App\Controller\User\LoginCheck;
 use App\Controller\User\MailController;
@@ -20,68 +25,36 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\HttpFoundation\File\File;
 
-#[ORM\Entity(repositoryClass: UserRepository::class)]
-#[ApiFilter(SearchFilter::class, properties: [
-    'email' => 'exact'
-])]
 #[ApiResource(
-    collectionOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['user:read']]
-        ],
-        'create_account' => [
-            'method' => 'POST',
-            'path' => 'users/createAccount',
-            'controller' => CreateAccount::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['user:write']]
-        ],
-        'login_check' => [
-            'method' => 'POST',
-            'path' => 'users/loginCheck',
-            'controller' => LoginCheck::class,
-            'input_formats' => ['json' => ['application/json']],
-            'normalization_context' => ['groups' => ['user:read', 'recipe:read', 'type:read', 'regime:read']],
-            'denormalization_context' => ['groups' => ['user:login']]
-        ],
-        'mail_reset' => [
-            'method' => 'POST',
-            'path' => 'users/mailReset',
-            'controller' => SendResetMail::class,
-            'input_formats' => ['json' => ['application/json']],
-            'normalization_context' => ['groups' => ['user:reset']],
-            'denormalization_context' => ['groups' => ['user:reset']]
-        ],
-        'reset_password' => [
-            'method' => 'POST',
-            'path' => 'users/resetPassword',
-            'controller' => ResetPassword::class,
-            'input_formats' => ['json' => ['application/json']],
-            'normalization_context' => ['groups' => ['user:reset']],
-            'denormalization_context' => ['groups' => ['user:reset']]
-        ],
-        'send_report' => [
-            'method' => 'POST',
-            'path' => 'users/sendReport',
-            'controller' => MailController::class,
-            'input_formats' => ['json' => ['application/json']],
-            'read' => false,
-        ],
-    ],
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['user:read', 'recipe:read', 'type:read', 'regime:read']]
-        ],
-        'put' => [
-            'controller' => PutUser::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['user:put']],
-            'read' => false
-        ],
-        'delete',
+    operations: [
+        new Get(),
+        new GetCollection(),
+        new Post(
+            uriTemplate: 'users/createAccount',
+            inputFormats: ['json' => ['application/json']],
+            denormalizationContext: ['groups' => ['user:write']]
+        ),
+        new Put(
+            controller: PutUser::class,
+            inputFormats: ['json' => ['application/json']],
+            denormalizationContext: ['groups' => ['user:put']],
+            read: false
+        ),
+        new Delete(),
+        new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class,),
+        new Post(uriTemplate: 'users/mailReset', controller: SendResetMail::class,),
+        new Post(uriTemplate: 'users/resetPassword', controller: ResetPassword::class,),
+        new Post(
+            uriTemplate: 'users/sendReport',
+            controller: MailController::class,
+            inputFormats: ['json' => ['application/json']],
+            read: false
+        )
     ],
     normalizationContext: ['groups' => ['user:read']]
 )]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ApiFilter(filterClass: SearchFilter::class, properties: ['email' => 'exact'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -99,18 +72,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'user:login', 'recipe:read', 'user:put', 'user:reset'])]
+    #[Groups(['user:read', 'user:write', 'recipe:read', 'user:put'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:write', 'user:login'])] //'user:read', 'recipe:read'
+    #[Groups(['user:write'])]
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['user:read', 'recipe:read'])]
     private ?string $imageUrl = null;
 
-    #[Groups(['user:image:upload'])]
     private ?File $image = null;
 
     #[ORM\ManyToMany(targetEntity: Recipe::class, mappedBy: 'savedByUsers')]

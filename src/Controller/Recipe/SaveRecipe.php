@@ -11,21 +11,28 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SaveRecipe extends AbstractController
 {
-  public function saveRecipe(Request $request, $userId, $recipeId, UserRepository $ur, RecipeRepository $rr, EntityManagerInterface $em)
+  public function __construct(
+    private RecipeRepository $rr,
+    private UserRepository $ur,
+    private EntityManagerInterface $em
+  ) {
+  }
+
+  public function __invoke(Request $request, $userId, $recipeId)
   {
     $requestData = json_decode($request->getContent(), true);
-    $recipe = $rr->find($recipeId);
-    $user = $ur->find($userId);
+    $recipe = $this->rr->find($recipeId);
+    $user = $this->ur->find($userId);
 
     if ($requestData["action"] === "add") {
       $user->addSavedRecipe($recipe);
-      $em->persist($user);
-      $em->flush();
+      $this->em->persist($user);
+      $this->em->flush();
     }
 
     if ($requestData["action"] === "delete") {
       $user->removeSavedRecipe($recipe);
-      $em->flush();
+      $this->em->flush();
     }
 
     return new JsonResponse("Success");

@@ -2,11 +2,17 @@
 
 namespace App\Entity;
 
-use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Put;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\ApiResource;
 use App\Controller\Recipe\CreateRecipe;
 use App\Controller\Recipe\FavouriteRecipes;
 use App\Controller\Recipe\MyRecipes;
 use App\Controller\Recipe\PutRecipe;
+use App\Controller\Recipe\SaveRecipe;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,50 +20,25 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: RecipeRepository::class)]
 #[ApiResource(
-    collectionOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['recipe:read']]
-        ],
-        'post' => [
-            'controller' => CreateRecipe::class,
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['recipe:write']]
-        ],
-        'save_recipe' => [
-            'method' => 'POST',
-            'path' => 'recipes/{recipeId}/users/{userId}',
-            'controller' => "App\Controller\Recipe\SaveRecipe::saveRecipe",
-        ],
+    operations: [
+        new Get(normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']]),
+        new GetCollection(normalizationContext: ['groups' => ['recipe:read']]),
+        new Post(controller: CreateRecipe::class, inputFormats: ['json' => ['application/json']]),
+        new Put(
+            controller: PutRecipe::class,
+            inputFormats: ['json' => ['application/json']],
+            denormalizationContext: ['groups' => ['recipe:put']]
+        ),
+        new Delete(),
+        new Get(uriTemplate: 'favourites/user/{id}', controller: FavouriteRecipes::class, read: false),
+        new Get(uriTemplate: 'recipes/user/{id}', controller: MyRecipes::class, read: false),
+        new Post(uriTemplate: 'recipes/{recipeId}/users/{userId}', controller: SaveRecipe::class, read: false),
     ],
-
-    itemOperations: [
-        'get' => [
-            'normalization_context' => ['groups' => ['recipe:read', 'recipe:item:read']]
-        ],
-        'put' => [
-            'input_formats' => ['json' => ['application/json']],
-            'denormalization_context' => ['groups' => ['recipe:put']],
-            'controller' => PutRecipe::class,
-        ],
-        'delete',
-        'favourite_recipe' => [
-            'method' => 'GET',
-            'path' => 'favourites/user/{id}',
-            'controller' => FavouriteRecipes::class,
-            'read' => false,
-        ],
-        'user_recipe' => [
-            'method' => 'GET',
-            'path' => 'recipes/user/{id}',
-            'controller' => MyRecipes::class,
-            'read' => false,
-        ]
-    ],
-    normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']],
-    denormalizationContext: ['groups' => ['recipe:write', 'recipe:put']]
+    denormalizationContext: ['groups' => ['recipe:write']],
+    normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']]
 )]
+#[ORM\Entity(repositoryClass: RecipeRepository::class)]
 class Recipe
 {
     #[ORM\Id]
@@ -109,7 +90,6 @@ class Recipe
     #[Groups(['recipe:read'])]
     private ?string $imageUrl = null;
 
-    #[Groups(['recipe:image:upload'])]
     private ?File $image = null;
 
     #[ORM\Column(nullable: false)]
