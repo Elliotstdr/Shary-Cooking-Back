@@ -30,6 +30,10 @@ class IngredientData
     #[Groups(['ingdata:read'])]
     private ?IngredientType $type = null;
 
+    #[ORM\Column(nullable: true)]
+    #[Groups(['ingdata:read'])]
+    private ?int $frequency = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -55,6 +59,18 @@ class IngredientData
     public function setType(?IngredientType $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function getFrequency(): ?int
+    {
+        return $this->frequency;
+    }
+
+    public function setFrequency(?int $frequency): static
+    {
+        $this->frequency = $frequency;
 
         return $this;
     }

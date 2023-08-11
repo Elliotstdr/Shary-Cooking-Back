@@ -69,17 +69,29 @@ class CreateRecipe extends AbstractController
 
   public function createIngredient($ingredientItem, $newRecipe)
   {
+    $ingredientLabel = ucfirst(strtolower($ingredientItem["label"]));
     $ingredient = new Ingredient();
     $ingredient->setQuantity($ingredientItem["quantity"]);
-    $ingredient->setLabel(($ingredientItem["label"]));
+    $ingredient->setLabel(($ingredientLabel));
     $ingredient->setUnit($this->ur->find($ingredientItem["unit"]["id"]));
     $ingredient->setRecipe($newRecipe);
 
-    if (!$this->idr->findOneBy(["name" => $ingredientItem["label"]])) {
+    $searchedIngredient = $this->idr->findOneBy(["name" => $ingredientLabel]);
+    if (!$searchedIngredient) {
       $newIng = new IngredientData();
-      $newIng->setName($ingredientItem["label"]);
+      $newIng->setName($ingredientLabel);
       $newIng->setType($this->itr->findOneBy(["label" => "unknown"]));
+      $newIng->setFrequency(1);
       $this->em->persist($newIng);
+    } else {
+      $frequency = $searchedIngredient->getFrequency();
+      if ($frequency) {
+        $frequency += 1;
+      } else {
+        $frequency = 1;
+      }
+      $searchedIngredient->setFrequency($frequency);
+      $this->em->persist($searchedIngredient);
     }
 
     $this->em->persist($ingredient);
