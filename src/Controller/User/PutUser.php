@@ -32,6 +32,10 @@ class PutUser extends AbstractController
     ]);
     $passwordHasher = $factory->getPasswordHasher('common');
 
+    if ($userToModify->getEmail() === "test@test.com") {
+      throw new Exception('Vous ne pouvez pas modifier les informations du compte avec un compte visiteur');
+    }
+
     if (
       $userToModify->getEmail() !== $requestData["email"] &&
       $this->ur->findOneBy(['email' => $requestData["email"]])

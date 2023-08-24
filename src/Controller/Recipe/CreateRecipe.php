@@ -13,6 +13,7 @@ use App\Repository\RecipeRepository;
 use App\Repository\UnitRepository;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
+use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -31,6 +32,9 @@ class CreateRecipe extends AbstractController
 
   public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
   {
+    if ($data->getPostedByUser()->getEmail() === "test@test.com") {
+      throw new Exception('Vous ne pouvez pas créer de recette avec un compte visiteur');
+    }
     $this->em->persist($data);
     $this->em->flush();
 
