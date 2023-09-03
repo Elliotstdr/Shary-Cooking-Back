@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 
@@ -39,12 +40,12 @@ class CreateAccount extends AbstractController
     $this->em->flush();
 
     $returnUser = $this->ur->findOneBy(['email' => $data->getEmail()]);
-    return [
+    return new JsonResponse([
       'id' => $returnUser->getId(),
       'name' => $returnUser->getName(),
       'lastname' => $returnUser->getLastname(),
       'email' => $returnUser->getEmail(),
       'imageUrl' => $returnUser->getImageUrl()
-    ];
+    ]);
   }
 }

@@ -30,6 +30,7 @@ use Symfony\Component\HttpFoundation\File\File;
         new Get(),
         new GetCollection(),
         new Post(
+            controller: CreateAccount::class,
             uriTemplate: 'users/createAccount',
             inputFormats: ['json' => ['application/json']],
             denormalizationContext: ['groups' => ['user:write']]
