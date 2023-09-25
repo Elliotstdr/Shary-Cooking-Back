@@ -31,8 +31,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['recipe:put']]
         ),
         new Delete(),
-        new Get(uriTemplate: 'favourites/user/{id}', controller: FavouriteRecipes::class, read: false),
-        new Get(uriTemplate: 'recipes/user/{id}', controller: MyRecipes::class, read: false),
+        new Get(
+            uriTemplate: 'recipes/user_fav/{id}',
+            controller: FavouriteRecipes::class,
+            read: false,
+            security: "is_granted('OWN', id)"
+        ),
+        new Get(
+            uriTemplate: 'recipes/user/{id}',
+            controller: MyRecipes::class,
+            read: false,
+            security: "is_granted('OWN', id)"
+        ),
         new Post(uriTemplate: 'recipes/{recipeId}/users/{userId}', controller: SaveRecipe::class, read: false),
     ],
     denormalizationContext: ['groups' => ['recipe:write']],

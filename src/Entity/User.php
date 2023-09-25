@@ -39,7 +39,8 @@ use Symfony\Component\HttpFoundation\File\File;
             controller: PutUser::class,
             inputFormats: ['json' => ['application/json']],
             denormalizationContext: ['groups' => ['user:put']],
-            read: false
+            read: false,
+            security: "is_granted('OWN', id)"
         ),
         new Get(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
         new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class,),

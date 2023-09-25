@@ -15,12 +15,6 @@ class MyRecipes extends AbstractController
    */
   public function __invoke(int $id)
   {
-    $data = $this->rr->getMyRecipes($id);
-
-    $response = [];
-    foreach ($data as $element) {
-      $response[] = $this->rr->find($element["id"]);
-    }
-    return $response;
+    return $this->rr->getMyRecipes($id);
   }
 }

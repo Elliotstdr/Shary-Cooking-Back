@@ -46,7 +46,7 @@ class RecipeRepository extends ServiceEntityRepository
             ->where("sbu.id = :id")
             ->setParameter(':id', $id)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 
     public function getMyRecipes(int $id)
@@ -55,7 +55,7 @@ class RecipeRepository extends ServiceEntityRepository
             ->where("r.postedByUser = :id")
             ->setParameter(':id', $id)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
     }
 
     //    /**
