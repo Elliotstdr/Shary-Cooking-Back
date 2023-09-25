@@ -30,7 +30,7 @@ class ResetPassword extends AbstractController
 
     $user = $this->ur->findOneBy(['email' => $requestData["email"]]);
 
-    if (!$pHasher->verify($user->getResetPassword(), $requestData["resetKey"])) {
+    if ($user && !$pHasher->verify($user->getResetPassword(), $requestData["resetKey"])) {
       throw new Exception("La clé de réinitialisation n'est pas correcte");
     }
 

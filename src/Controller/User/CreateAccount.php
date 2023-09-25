@@ -39,13 +39,10 @@ class CreateAccount extends AbstractController
     $this->em->persist($data);
     $this->em->flush();
 
-    $returnUser = $this->ur->findOneBy(['email' => $data->getEmail()]);
-    return new JsonResponse([
-      'id' => $returnUser->getId(),
-      'name' => $returnUser->getName(),
-      'lastname' => $returnUser->getLastname(),
-      'email' => $returnUser->getEmail(),
-      'imageUrl' => $returnUser->getImageUrl()
-    ]);
+    $user = $this->ur->findOneBy(['email' => $data->getEmail()]);
+    if (!$user) {
+      return new JsonResponse("An error occured");
+    }
+    return $user;
   }
 }

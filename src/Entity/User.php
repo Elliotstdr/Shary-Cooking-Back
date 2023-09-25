@@ -16,6 +16,7 @@ use App\Controller\User\MailController;
 use App\Controller\User\PutUser;
 use App\Controller\User\ResetPassword;
 use App\Controller\User\SendResetMail;
+use App\Controller\User\UserByEmail;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -27,8 +28,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 #[ApiResource(
     operations: [
-        new Get(),
-        new GetCollection(),
+        new GetCollection(normalizationContext: ['groups' => ['user:read:all']]),
         new Post(
             controller: CreateAccount::class,
             uriTemplate: 'users/createAccount',
@@ -41,7 +41,7 @@ use Symfony\Component\HttpFoundation\File\File;
             denormalizationContext: ['groups' => ['user:put']],
             read: false
         ),
-        new Delete(),
+        new Get(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
         new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class,),
         new Post(uriTemplate: 'users/mailReset', controller: SendResetMail::class,),
         new Post(uriTemplate: 'users/resetPassword', controller: ResetPassword::class,),
@@ -61,19 +61,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read', 'user:write', 'recipe:read'])]
+    #[Groups(['user:read', 'user:read:all', 'user:write', 'recipe:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'recipe:read', 'user:put'])]
+    #[Groups(['user:read', 'user:read:all', 'user:write', 'user:put', 'recipe:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'recipe:read', 'user:put'])]
+    #[Groups(['user:read', 'user:write', 'user:put'])]
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:write', 'recipe:read', 'user:put'])]
+    #[Groups(['user:read', 'user:write', 'user:put'])]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]

@@ -4,6 +4,7 @@ namespace App\Controller\User;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\Service\CheckUserService;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -19,12 +20,16 @@ class PutUser extends AbstractController
     private PostImageService $postImageService,
     private EntityManagerInterface $em,
     private UserRepository $ur,
-    private JWTTokenManagerInterface $JWTManager
+    private JWTTokenManagerInterface $JWTManager,
+    private CheckUserService $checkUserService
   ) {
   }
 
   public function __invoke(Request $request, int $id)
   {
+    if (!$this->checkUserService->checkUser($request)) {
+      return new JsonResponse('Accès non autorisé', 403);
+    }
     $requestData = json_decode($request->getContent(), true);
     $userToModify = $this->ur->find($id);
     $factory = new PasswordHasherFactory([
