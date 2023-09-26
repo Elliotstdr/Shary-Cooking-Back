@@ -39,18 +39,6 @@ class IngredientRepository extends ServiceEntityRepository
         }
     }
 
-    public function getIngredientsByRecipeId(int $id)
-    {
-        return $this->createQueryBuilder('i')
-            ->innerJoin('i.recipe', 'r')
-            ->join('i.unit', 'u')
-            ->where("r.id = :id")
-            ->setParameter(':id', $id)
-            ->select('i, u')
-            ->getQuery()
-            ->getArrayResult();
-    }
-
     //    /**
     //     * @return Ingredient[] Returns an array of Ingredient objects
     //     */

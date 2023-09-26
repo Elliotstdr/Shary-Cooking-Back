@@ -4,6 +4,8 @@ namespace App\Controller\Recipe;
 
 use App\Dto\CreateRecipeDto;
 use App\Entity\Recipe;
+use App\Service\CreateIngredientService;
+use App\Service\CreateStepService;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
@@ -15,42 +17,38 @@ class PutRecipe extends AbstractController
 {
   public function __construct(
     private EntityManagerInterface $em,
-    private CreateRecipe $cr,
-    private PostImageService $postImageService,
+    private PostImageService $pis,
+    private CreateIngredientService $cis,
+    private CreateStepService $css
   ) {
   }
 
   public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
   {
     if ($data->getPostedByUser()->getEmail() === "test@test.com") {
-      throw new Exception('Vous ne pouvez pas modifier de cette avec un compte visiteur');
+      throw new Exception('Vous ne pouvez pas modifier cette recette avec un compte visiteur');
     }
     $recettePutDto = $serializer->deserialize($request->getContent(), CreateRecipeDto::class, 'json');
     $this->em->persist($data);
 
-    foreach ($data->getIngredients() as $ingredient) {
-      $this->em->remove($ingredient);
-    }
-    foreach ($data->getSteps() as $step) {
-      $this->em->remove($step);
-    }
+    $data->removeAllSteps();
+    $data->removeAllIngredients();
+    $this->em->flush();
 
     foreach ($recettePutDto->steps as $step) {
-      $this->cr->createStep($step, $data);
+      $this->css->createStep($step, $data);
     }
     foreach ($recettePutDto->ingredients as $ingredient) {
-      $this->cr->createIngredient($ingredient, $data);
+      $this->cis->createIngredient($ingredient, $data);
+    }
+
+    if ($recettePutDto->image) {
+      $fileName = $this->pis->saveFile($recettePutDto->image, 1200, $data->getImageUrl());
+      $data->setImageUrl('/media/' . $fileName);
+      $this->em->persist($data);
     }
 
     $this->em->flush();
-
-    if ($recettePutDto->image) {
-      $fileName = $this->postImageService->saveFile($recettePutDto->image);
-      $this->postImageService->deleteOldFile($data->getImageUrl());
-      $data->setImageUrl('/media/' . $fileName);
-      $this->em->persist($data);
-      $this->em->flush();
-    }
 
     return $data;
   }

@@ -43,7 +43,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             read: false,
             security: "is_granted('OWN', id)"
         ),
-        new Post(uriTemplate: 'recipes/{recipeId}/users/{userId}', controller: SaveRecipe::class, read: false),
+        new Post(
+            uriTemplate: 'recipes/{recipeId}/users/{userId}',
+            controller: SaveRecipe::class,
+            read: false,
+            security: "is_granted('OWN', userId)"
+        ),
     ],
     denormalizationContext: ['groups' => ['recipe:write']],
     normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']]
@@ -235,6 +240,13 @@ class Recipe
         return $this;
     }
 
+    public function removeAllIngredients()
+    {
+        $this->ingredients->clear();
+
+        return $this;
+    }
+
     public function getSteps(): Collection
     {
         return $this->steps;
@@ -252,6 +264,13 @@ class Recipe
     public function removeSteps(Step $steps): self
     {
         $this->steps->removeElement($steps);
+
+        return $this;
+    }
+
+    public function removeAllSteps()
+    {
+        $this->steps->clear();
 
         return $this;
     }

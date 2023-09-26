@@ -16,7 +16,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 class PutUser extends AbstractController
 {
   public function __construct(
-    private PostImageService $postImageService,
+    private PostImageService $pis,
     private EntityManagerInterface $em,
     private UserRepository $ur,
     private JWTTokenManagerInterface $JWTManager
@@ -44,9 +44,7 @@ class PutUser extends AbstractController
     }
 
     if (isset($requestData["image"]) && $requestData["image"]) {
-      $fileName = $this->postImageService->saveFile($requestData["image"], 500);
-      $this->postImageService->deleteOldFile($userToModify->getImageUrl());
-
+      $fileName = $this->pis->saveFile($requestData["image"], 500, $userToModify->getImageUrl());
       $userToModify->setImageUrl('/media/' . $fileName);
       $this->em->persist($userToModify);
     }

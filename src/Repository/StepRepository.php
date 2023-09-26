@@ -39,17 +39,6 @@ class StepRepository extends ServiceEntityRepository
         }
     }
 
-    public function getStepsByRecipeId(int $id)
-    {
-        return $this->createQueryBuilder('s')
-            ->innerJoin('s.recipe', 'r')
-            ->where("r.id = :id")
-            ->setParameter(':id', $id)
-            ->select('s')
-            ->getQuery()
-            ->getArrayResult();
-    }
-
     //    /**
     //     * @return Step[] Returns an array of Step objects
     //     */

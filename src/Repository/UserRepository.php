@@ -39,18 +39,6 @@ class UserRepository extends ServiceEntityRepository
         }
     }
 
-    public function getUserByEmailPassword(string $email, string $password)
-    {
-        return $this->createQueryBuilder('u')
-            ->where("u.email = :email")
-            ->andWhere("u.password = :password")
-            ->setParameter(':email', $email)
-            ->setParameter(':password', $password)
-            ->select('u')
-            ->getQuery()
-            ->getArrayResult();
-    }
-
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

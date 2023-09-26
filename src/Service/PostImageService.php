@@ -13,7 +13,7 @@ class PostImageService extends AbstractController
   {
   }
 
-  public function saveFile($file, $fileSize = 1200)
+  public function saveFile($file, $fileSize = 1200, $oldFilePath = null)
   {
     $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $file));
     $fileName = uniqid('', true) . '.jpg';
@@ -32,10 +32,14 @@ class PostImageService extends AbstractController
       file_put_contents($filePath, $fileData);
     }
 
+    if ($oldFilePath) {
+      $this->deleteOldFile($oldFilePath);
+    }
+
     return $fileName;
   }
 
-  public function deleteOldFile($oldFilePath)
+  private function deleteOldFile($oldFilePath)
   {
     if ($oldFilePath) {
       $fileSystem = new Filesystem();

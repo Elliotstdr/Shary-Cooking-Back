@@ -28,6 +28,7 @@ use Symfony\Component\HttpFoundation\File\File;
 
 #[ApiResource(
     operations: [
+        new Get(security: "is_granted('OWN', id)"),
         new GetCollection(normalizationContext: ['groups' => ['user:read:all']]),
         new Post(
             controller: CreateAccount::class,
