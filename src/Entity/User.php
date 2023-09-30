@@ -43,7 +43,7 @@ use Symfony\Component\HttpFoundation\File\File;
             read: false,
             security: "is_granted('OWN', id)"
         ),
-        new Get(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
+        new Post(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
         new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class,),
         new Post(uriTemplate: 'users/mailReset', controller: SendResetMail::class,),
         new Post(uriTemplate: 'users/resetPassword', controller: ResetPassword::class,),
