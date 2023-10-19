@@ -26,14 +26,14 @@ class SaveRecipe extends AbstractController
 
     if ($requestData["action"] === "add") {
       $user->addSavedRecipe($recipe);
-      $this->em->persist($user);
-      $this->em->flush();
     }
 
     if ($requestData["action"] === "delete") {
       $user->removeSavedRecipe($recipe);
-      $this->em->flush();
     }
+
+    $this->em->persist($user);
+    $this->em->flush();
 
     return new JsonResponse("Success");
   }

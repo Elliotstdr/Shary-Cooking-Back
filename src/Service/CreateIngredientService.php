@@ -20,14 +20,11 @@ class CreateIngredientService extends AbstractController
   ) {
   }
 
-  public function createIngredient($ingredientItem, $newRecipe)
+  public function createIngredient(Ingredient $ingredientItem, $newRecipe)
   {
-    $ingredientLabel = ucfirst(strtolower($ingredientItem["label"]));
-    $ingredient = new Ingredient();
-    $ingredient->setQuantity($ingredientItem["quantity"]);
-    $ingredient->setLabel(($ingredientLabel));
-    $ingredient->setUnit($this->ur->find($ingredientItem["unit"]["id"]));
-    $ingredient->setRecipe($newRecipe);
+    $ingredientLabel = ucfirst(strtolower($ingredientItem->getLabel()));
+    $ingredientItem->setLabel(($ingredientLabel));
+    $ingredientItem->setRecipe($newRecipe);
 
     $searchedIngredient = $this->idr->findOneBy(["name" => $ingredientLabel]);
     if (!$searchedIngredient) {
@@ -47,6 +44,6 @@ class CreateIngredientService extends AbstractController
       $this->em->persist($searchedIngredient);
     }
 
-    $this->em->persist($ingredient);
+    $this->em->persist($ingredientItem);
   }
 }

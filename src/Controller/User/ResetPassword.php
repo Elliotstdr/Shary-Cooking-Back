@@ -10,6 +10,7 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ResetPassword extends AbstractController
 {
@@ -17,6 +18,7 @@ class ResetPassword extends AbstractController
     private UserRepository $ur,
     private EntityManagerInterface $em,
     private JWTTokenManagerInterface $JWTManager,
+    private NormalizerInterface $normalizer
   ) {
   }
 
@@ -39,12 +41,8 @@ class ResetPassword extends AbstractController
     $this->em->persist($user);
     $this->em->flush();
 
-    return new JsonResponse([[
-      'id' => $user->getId(),
-      'name' => $user->getName(),
-      'lastname' => $user->getLastname(),
-      'email' => $user->getEmail(),
-      'imageUrl' => $user->getImageUrl()
-    ], $this->JWTManager->create($user)]);
+    return new JsonResponse([
+      $this->normalizer->normalize($user), $this->JWTManager->create($user)
+    ]);
   }
 }
