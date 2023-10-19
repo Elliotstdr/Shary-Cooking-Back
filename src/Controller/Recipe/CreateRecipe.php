@@ -2,17 +2,17 @@
 
 namespace App\Controller\Recipe;
 
-use App\Dto\CreateRecipeDto;
+use App\Entity\Ingredient;
 use App\Entity\Recipe;
+use App\Entity\Step;
 use App\Repository\RecipeRepository;
 use App\Service\CreateIngredientService;
-use App\Service\CreateStepService;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class CreateRecipe extends AbstractController
 {
@@ -21,11 +21,11 @@ class CreateRecipe extends AbstractController
     private RecipeRepository $rr,
     private PostImageService $postImageService,
     private CreateIngredientService $cis,
-    private CreateStepService $css
+    private DenormalizerInterface $denormalizer
   ) {
   }
 
-  public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
+  public function __invoke(Request $request, Recipe $data)
   {
     if ($data->getPostedByUser()->getEmail() === "test@test.com") {
       throw new Exception('Vous ne pouvez pas créer de recette avec un compte visiteur');
@@ -33,21 +33,24 @@ class CreateRecipe extends AbstractController
     $this->em->persist($data);
     $this->em->flush();
 
-    $recetteCreateDto = $serializer->deserialize($request->getContent(), CreateRecipeDto::class, 'json');
+    $decodedResponse = json_decode($request->getContent(), true);
+    $steps = $this->denormalizer->denormalize($decodedResponse["steps"], Step::class . "[]");
+    $ingredients = $this->denormalizer->denormalize($decodedResponse["ingredients"], Ingredient::class . "[]");
 
     $newRecipe = $this->rr->find($data->getId());
-    foreach ($recetteCreateDto->steps as $step) {
-      $this->css->createStep($step, $newRecipe);
+    foreach ($steps as $step) {
+      $step->setRecipe($newRecipe);
+      $this->em->persist($step);
     }
 
-    foreach ($recetteCreateDto->ingredients as $ingredient) {
+    foreach ($ingredients as $ingredient) {
       $this->cis->createIngredient($ingredient, $newRecipe);
     }
 
     $this->em->flush();
 
-    if ($recetteCreateDto->image) {
-      $fileName = $this->postImageService->saveFile($recetteCreateDto->image);
+    if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
+      $fileName = $this->postImageService->saveFile($decodedResponse["image"]);
       $data->setImageUrl('/media/' . $fileName);
       $this->em->persist($data);
       $this->em->flush();

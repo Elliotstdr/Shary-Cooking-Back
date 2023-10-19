@@ -2,16 +2,16 @@
 
 namespace App\Controller\Recipe;
 
-use App\Dto\CreateRecipeDto;
+use App\Entity\Ingredient;
 use App\Entity\Recipe;
+use App\Entity\Step;
 use App\Service\CreateIngredientService;
-use App\Service\CreateStepService;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class PutRecipe extends AbstractController
 {
@@ -19,31 +19,34 @@ class PutRecipe extends AbstractController
     private EntityManagerInterface $em,
     private PostImageService $pis,
     private CreateIngredientService $cis,
-    private CreateStepService $css
+    private DenormalizerInterface $denormalizer
   ) {
   }
 
-  public function __invoke(Request $request, SerializerInterface $serializer, Recipe $data)
+  public function __invoke(Request $request, Recipe $data)
   {
     if ($data->getPostedByUser()->getEmail() === "test@test.com") {
       throw new Exception('Vous ne pouvez pas modifier cette recette avec un compte visiteur');
     }
-    $recettePutDto = $serializer->deserialize($request->getContent(), CreateRecipeDto::class, 'json');
     $this->em->persist($data);
-
     $data->removeAllSteps();
     $data->removeAllIngredients();
     $this->em->flush();
 
-    foreach ($recettePutDto->steps as $step) {
-      $this->css->createStep($step, $data);
+    $decodedResponse = json_decode($request->getContent(), true);
+    $steps = $this->denormalizer->denormalize($decodedResponse["steps"], Step::class . "[]");
+    $ingredients = $this->denormalizer->denormalize($decodedResponse["ingredients"], Ingredient::class . "[]");
+
+    foreach ($steps as $step) {
+      $step->setRecipe($data);
+      $this->em->persist($step);
     }
-    foreach ($recettePutDto->ingredients as $ingredient) {
+    foreach ($ingredients as $ingredient) {
       $this->cis->createIngredient($ingredient, $data);
     }
 
-    if ($recettePutDto->image) {
-      $fileName = $this->pis->saveFile($recettePutDto->image, 1200, $data->getImageUrl());
+    if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
+      $fileName = $this->pis->saveFile($decodedResponse["image"], 1200, $data->getImageUrl());
       $data->setImageUrl('/media/' . $fileName);
       $this->em->persist($data);
     }
