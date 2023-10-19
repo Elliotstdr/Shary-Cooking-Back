@@ -3,7 +3,6 @@
 namespace App\Service;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Intervention\Image\ImageManagerStatic as Image;
 use Symfony\Component\Filesystem\Filesystem;
 

@@ -44,9 +44,9 @@ use Symfony\Component\HttpFoundation\File\File;
             security: "is_granted('OWN', id)"
         ),
         new Post(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
-        new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class,),
-        new Post(uriTemplate: 'users/mailReset', controller: SendResetMail::class,),
-        new Post(uriTemplate: 'users/resetPassword', controller: ResetPassword::class,),
+        new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class),
+        new Post(uriTemplate: 'users/mailReset', controller: SendResetMail::class),
+        new Post(uriTemplate: 'users/resetPassword', controller: ResetPassword::class),
         new Post(
             uriTemplate: 'users/sendReport',
             controller: MailController::class,

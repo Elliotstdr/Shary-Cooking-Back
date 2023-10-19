@@ -22,8 +22,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
     operations: [
-        new Get(normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']]),
-        new GetCollection(normalizationContext: ['groups' => ['recipe:read']]),
+        new Get(),
+        new GetCollection(),
         new Post(controller: CreateRecipe::class, inputFormats: ['json' => ['application/json']]),
         new Put(
             controller: PutRecipe::class,
@@ -51,7 +51,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
         ),
     ],
     denormalizationContext: ['groups' => ['recipe:write']],
-    normalizationContext: ['groups' => ['recipe:read', 'recipe:item:read']]
+    normalizationContext: ['groups' => ['recipe:read']]
 )]
 #[ORM\Entity(repositoryClass: RecipeRepository::class)]
 class Recipe
@@ -94,11 +94,11 @@ class Recipe
     private ?User $postedByUser = null;
 
     #[ORM\OneToMany(targetEntity: Ingredient::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private $ingredients;
 
     #[ORM\OneToMany(targetEntity: Step::class, mappedBy: 'recipe', cascade: ['persist'], orphanRemoval: true)]
-    #[Groups(['recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private Collection $steps;
 
     #[ORM\Column(length: 255, nullable: true)]

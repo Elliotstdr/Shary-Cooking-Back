@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\IngredientRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource]
@@ -14,20 +15,21 @@ class Ingredient
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'recipe:item:read', 'recipe:put'])]
+    #[Groups(['recipe:put'])]
     private ?int $id = null;
 
+    #[Context(['disable_type_enforcement' => true])]
     #[ORM\Column]
-    #[Groups(['ingredient:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?float $quantity = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['ingredient:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?string $label = null;
 
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['ingredient:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?Unit $unit = null;
 
     #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'ingredients')]

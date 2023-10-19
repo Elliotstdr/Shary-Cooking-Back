@@ -12,7 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    operations: [new Get(), new GetCollection(normalizationContext: ['groups' => ['ingtype:read']])]
+    operations: [new Get(), new GetCollection()],
+    normalizationContext: ['groups' => ['ingtype:read']]
 )]
 #[ORM\Entity(repositoryClass: IngredientTypeRepository::class)]
 class IngredientType

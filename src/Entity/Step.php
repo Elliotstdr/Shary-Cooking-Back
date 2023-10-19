@@ -14,20 +14,19 @@ class Step
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['step:read', 'recipe:item:read', 'recipe:put'])]
+    #[Groups(['recipe:put'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: Recipe::class, inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['step:read'])]
     private ?Recipe $recipe = null;
 
     #[ORM\Column(length: 10000)]
-    #[Groups(['step:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?string $description = null;
 
     #[ORM\Column]
-    #[Groups(['step:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?int $stepIndex = null;
 
     public function getId(): ?int

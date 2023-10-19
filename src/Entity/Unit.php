@@ -16,11 +16,11 @@ class Unit
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['unit:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['unit:read', 'recipe:item:read', 'recipe:put', 'recipe:read'])]
+    #[Groups(['recipe:put', 'recipe:read'])]
     private ?string $label = null;
 
     public function getId(): ?int
