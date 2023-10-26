@@ -37,14 +37,13 @@ class CreateRecipe extends AbstractController
     $steps = $this->denormalizer->denormalize($decodedResponse["steps"], Step::class . "[]");
     $ingredients = $this->denormalizer->denormalize($decodedResponse["ingredients"], Ingredient::class . "[]");
 
-    $newRecipe = $this->rr->find($data->getId());
     foreach ($steps as $step) {
-      $step->setRecipe($newRecipe);
+      $step->setRecipe($data);
       $this->em->persist($step);
     }
 
     foreach ($ingredients as $ingredient) {
-      $this->cis->createIngredient($ingredient, $newRecipe);
+      $this->cis->createIngredient($ingredient, $data);
     }
 
     $this->em->flush();
@@ -56,6 +55,6 @@ class CreateRecipe extends AbstractController
       $this->em->flush();
     }
 
-    return $newRecipe;
+    return $data;
   }
 }
