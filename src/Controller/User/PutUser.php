@@ -70,6 +70,6 @@ class PutUser extends AbstractController
     $this->em->persist($userToModify);
     $this->em->flush();
 
-    return new JsonResponse([$userToModify->getImageUrl(), $token]);
+    return new JsonResponse(["imageUrl" => $userToModify->getImageUrl(), "token" => $token]);
   }
 }

@@ -42,7 +42,7 @@ class ResetPassword extends AbstractController
     $this->em->flush();
 
     return new JsonResponse([
-      $this->normalizer->normalize($user), $this->JWTManager->create($user)
+      "user" => $this->normalizer->normalize($user), "token" => $this->JWTManager->create($user)
     ]);
   }
 }

@@ -83,7 +83,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'recipe:read'])]
+    #[Groups(['user:read', 'recipe:read', 'user:read:all'])]
     private ?string $imageUrl = null;
 
     private ?File $image = null;
