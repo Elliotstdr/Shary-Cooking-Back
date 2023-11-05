@@ -24,15 +24,17 @@ class MailController extends AbstractController
     $message = $requestData['message'];
     $file = $requestData['file'];
 
-    $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $file));
-
     // Envoyer l'e-mail
     $email = (new Email())
-      ->from('gece4010_mailsc@shary-cooking.fr')
-      ->to('gece4010_mailsc@shary-cooking.fr')
-      ->subject('Nouveau message de contact')
-      ->html("$firstname $lastname <br> Titre : $title <br> Message : $message")
-      ->attach($fileData, 'capture.png');
+      ->from('no-reply@shary-cooking.fr')
+      ->to($_ENV['EMAIL'])
+      ->subject('Bug report')
+      ->html("$firstname $lastname <br> Titre : $title <br> Message : $message");
+
+    if ($file) {
+      $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $file));
+      $email->attach($fileData, 'capture.png');
+    }
 
     $mailer->send($email);
 
