@@ -4,12 +4,12 @@ namespace App\Service;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Intervention\Image\ImageManagerStatic as Image;
-use Symfony\Component\Filesystem\Filesystem;
 
 class PostImageService extends AbstractController
 {
-  public function __construct()
-  {
+  public function __construct(
+    private DeleteOldFileService $deleteOldFileService
+  ) {
   }
 
   public function saveFile($file, $fileSize = 1200, $oldFilePath = null)
@@ -32,18 +32,9 @@ class PostImageService extends AbstractController
     }
 
     if ($oldFilePath) {
-      $this->deleteOldFile($oldFilePath);
+      $this->deleteOldFileService->deleteOldFile($oldFilePath);
     }
 
     return $fileName;
-  }
-
-  private function deleteOldFile($oldFilePath)
-  {
-    if ($oldFilePath) {
-      $fileSystem = new Filesystem();
-      $projectDir = $this->getParameter('kernel.project_dir');
-      $fileSystem->remove($projectDir . '/public' . $oldFilePath);
-    }
   }
 }

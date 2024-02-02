@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\Recipe\CreateRecipe;
+use App\Controller\Recipe\DeletePicture;
 use App\Controller\Recipe\FavouriteRecipes;
 use App\Controller\Recipe\MyRecipes;
 use App\Controller\Recipe\PutRecipe;
@@ -49,6 +50,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             read: false,
             security: "is_granted('OWN', userId)"
         ),
+        new Post(uriTemplate: 'recipes/{id}/deletePicture', controller: DeletePicture::class),
     ],
     denormalizationContext: ['groups' => ['recipe:write']],
     normalizationContext: ['groups' => ['recipe:read']]
@@ -292,7 +294,7 @@ class Recipe
         return $this->image;
     }
 
-    public function setImage(File $image): self
+    public function setImage(?File $image): self
     {
         $this->image = $image;
 
