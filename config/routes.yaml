@@ -5,7 +5,11 @@ controllers:
 kernel:
   resource: ../src/Kernel.php
   type: annotation
+
 # JWT Token
 auth:
-  path: /auth
+  path: /api/auth
   methods: ["POST"]
+
+api_refresh_token:
+  path: /api/token/refresh
