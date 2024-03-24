@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
@@ -29,7 +27,6 @@ use Symfony\Component\HttpFoundation\File\File;
 #[ApiResource(
     operations: [
         new Get(security: "is_granted('OWN', id)"),
-        new GetCollection(normalizationContext: ['groups' => ['user:read:all']]),
         new Post(
             controller: CreateAccount::class,
             uriTemplate: 'users/createAccount',
@@ -63,11 +60,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups(['user:read', 'user:read:all', 'user:write', 'recipe:read'])]
+    #[Groups(['user:read', 'user:write', 'recipe:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['user:read', 'user:read:all', 'user:write', 'user:put', 'recipe:read'])]
+    #[Groups(['user:read', 'user:write', 'user:put', 'recipe:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 255)]
@@ -83,7 +80,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $password = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    #[Groups(['user:read', 'recipe:read', 'user:read:all'])]
+    #[Groups(['user:read', 'recipe:read'])]
     private ?string $imageUrl = null;
 
     private ?File $image = null;
