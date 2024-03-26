@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use App\Controller\User\CreateAccount;
+use App\Controller\User\EditPassword;
 use App\Controller\User\LoginCheck;
 use App\Controller\User\MailController;
 use App\Controller\User\PutUser;
@@ -37,6 +38,13 @@ use Symfony\Component\HttpFoundation\File\File;
             controller: PutUser::class,
             inputFormats: ['json' => ['application/json']],
             denormalizationContext: ['groups' => ['user:put']],
+            read: false,
+            security: "is_granted('OWN', id)"
+        ),
+        new Post(
+            uriTemplate: 'users/edit_password/{id}',
+            controller: EditPassword::class,
+            inputFormats: ['json' => ['application/json']],
             read: false,
             security: "is_granted('OWN', id)"
         ),
