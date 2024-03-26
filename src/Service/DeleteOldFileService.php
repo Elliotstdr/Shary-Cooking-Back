@@ -11,7 +11,7 @@ class DeleteOldFileService extends AbstractController
   {
   }
 
-  public function deleteOldFile($oldFilePath)
+  public function deleteOldFile(string $oldFilePath)
   {
     if ($oldFilePath) {
       $fileSystem = new Filesystem();

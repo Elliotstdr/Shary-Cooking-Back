@@ -12,17 +12,17 @@ use Symfony\Component\HttpFoundation\Request;
 class SaveRecipe extends AbstractController
 {
   public function __construct(
-    private readonly RecipeRepository $rr,
-    private readonly UserRepository $ur,
+    private readonly RecipeRepository $recipeRepository,
+    private readonly UserRepository $userRepository,
     private readonly EntityManagerInterface $em
   ) {
   }
 
-  public function __invoke(Request $request, $userId, $recipeId): JsonResponse
+  public function __invoke(Request $request, int $userId, int $recipeId): JsonResponse
   {
     $requestData = json_decode($request->getContent(), true);
-    $recipe = $this->rr->find($recipeId);
-    $user = $this->ur->find($userId);
+    $recipe = $this->recipeRepository->find($recipeId);
+    $user = $this->userRepository->find($userId);
 
     if ($requestData["action"] === "add") {
       $user->addSavedRecipe($recipe);

@@ -14,7 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 class SendResetMail extends AbstractController
 {
   public function __construct(
-    private readonly UserRepository $ur,
+    private readonly UserRepository $userRepository,
     private readonly MailerInterface $mailer,
     private readonly EntityManagerInterface $em,
   ) {
@@ -28,7 +28,7 @@ class SendResetMail extends AbstractController
       'common' => ['algorithm' => 'bcrypt'],
     ]);
     $passwordHasher = $factory->getPasswordHasher('common');
-    $user = $this->ur->findOneBy(['email' => $requestData["email"]]);
+    $user = $this->userRepository->findOneBy(['email' => $requestData["email"]]);
 
     if (!$user) {
       return new JsonResponse($response);

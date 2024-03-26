@@ -10,11 +10,12 @@ use Symfony\Component\Mime\Email;
 
 class MailController extends AbstractController
 {
-  public function __construct()
-  {
+  public function __construct(
+    private readonly MailerInterface $mailer
+  ) {
   }
 
-  public function __invoke(Request $request, MailerInterface $mailer): Response
+  public function __invoke(Request $request): Response
   {
     $requestData = json_decode($request->getContent(), true);
     // Récupérer les données du formulaire depuis la requête
@@ -36,7 +37,7 @@ class MailController extends AbstractController
       $email->attach($fileData, 'capture.png');
     }
 
-    $mailer->send($email);
+    $this->mailer->send($email);
 
     // Répondre avec une réponse JSON pour confirmer l'envoi de l'e-mail
     return $this->json(['message' => 'E-mail envoyé avec succès']);

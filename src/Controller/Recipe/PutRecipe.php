@@ -17,8 +17,8 @@ class PutRecipe extends AbstractController
 {
   public function __construct(
     private readonly EntityManagerInterface $em,
-    private readonly PostImageService $pis,
-    private readonly CreateIngredientService $cis,
+    private readonly PostImageService $postImageService,
+    private readonly CreateIngredientService $createIngredientService,
     private readonly DenormalizerInterface $denormalizer
   ) {
   }
@@ -42,11 +42,11 @@ class PutRecipe extends AbstractController
       $this->em->persist($step);
     }
     foreach ($ingredients as $ingredient) {
-      $this->cis->createIngredient($ingredient, $data);
+      $this->createIngredientService->createIngredient($ingredient, $data);
     }
 
     if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
-      $fileName = $this->pis->saveFile($decodedResponse["image"], 1200, $data->getImageUrl());
+      $fileName = $this->postImageService->saveFile($decodedResponse["image"], 1200, $data->getImageUrl());
       $data->setImageUrl('/media/' . $fileName);
       $this->em->persist($data);
     }

@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\Ingredient;
 use App\Entity\IngredientData;
+use App\Entity\Recipe;
 use App\Repository\IngredientDataRepository;
 use App\Repository\IngredientTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,22 +14,22 @@ class CreateIngredientService extends AbstractController
 {
   public function __construct(
     private readonly EntityManagerInterface $em,
-    private readonly IngredientDataRepository $idr,
-    private readonly IngredientTypeRepository $itr,
+    private readonly IngredientDataRepository $ingredientDataRepository,
+    private readonly IngredientTypeRepository $ingredientTypeRepository,
   ) {
   }
 
-  public function createIngredient(Ingredient $ingredientItem, $newRecipe)
+  public function createIngredient(Ingredient $ingredientItem, Recipe $newRecipe)
   {
     $ingredientLabel = ucfirst(strtolower($ingredientItem->getLabel()));
     $ingredientItem->setLabel(($ingredientLabel));
     $ingredientItem->setRecipe($newRecipe);
 
-    $searchedIngredient = $this->idr->findOneBy(["name" => $ingredientLabel]);
+    $searchedIngredient = $this->ingredientDataRepository->findOneBy(["name" => $ingredientLabel]);
     if (!$searchedIngredient) {
       $newIng = new IngredientData();
       $newIng->setName($ingredientLabel);
-      $newIng->setType($this->itr->findOneBy(["label" => "unknown"]));
+      $newIng->setType($this->ingredientTypeRepository->findOneBy(["label" => "unknown"]));
       $newIng->setFrequency(1);
       $this->em->persist($newIng);
     } else {

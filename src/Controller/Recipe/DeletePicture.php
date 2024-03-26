@@ -18,7 +18,7 @@ class DeletePicture extends AbstractController
   ) {
   }
 
-  public function __invoke($id): Recipe
+  public function __invoke(int $id): Recipe
   {
     $recipe = $this->recipeRepository->find($id);
 

@@ -18,7 +18,7 @@ class CreateRecipe extends AbstractController
   public function __construct(
     private readonly EntityManagerInterface $em,
     private readonly PostImageService $postImageService,
-    private readonly CreateIngredientService $cis,
+    private readonly CreateIngredientService $createIngredientService,
     private readonly DenormalizerInterface $denormalizer
   ) {
   }
@@ -41,7 +41,7 @@ class CreateRecipe extends AbstractController
     }
 
     foreach ($ingredients as $ingredient) {
-      $this->cis->createIngredient($ingredient, $data);
+      $this->createIngredientService->createIngredient($ingredient, $data);
     }
 
     $this->em->flush();

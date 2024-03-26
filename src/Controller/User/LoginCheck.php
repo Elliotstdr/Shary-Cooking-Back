@@ -10,15 +10,17 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class LoginCheck extends AbstractController
 {
-  public function __construct()
-  {
+  public function __construct(
+    private readonly UserRepository $userRepository,
+    private readonly JWTTokenManagerInterface $JWTManager
+  ) {
   }
 
-  public function __invoke(User $data, UserRepository $ur, JWTTokenManagerInterface $JWTManager): JsonResponse
+  public function __invoke(User $data): JsonResponse
   {
-    $foundedUser = $ur->findOneBy(['email' => $data->getEmail()]);
+    $foundedUser = $this->userRepository->findOneBy(['email' => $data->getEmail()]);
     if ($foundedUser) {
-      return new JsonResponse($JWTManager->create($data));
+      return new JsonResponse($this->JWTManager->create($data));
     } else {
       return new JsonResponse("No token available");
     }

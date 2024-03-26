@@ -7,8 +7,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class MyRecipes extends AbstractController
 {
-  public function __construct(private readonly RecipeRepository $rr)
-  {
+  public function __construct(
+    private readonly RecipeRepository $recipeRepository
+  ) {
   }
   /**
    * @param int $id
@@ -16,6 +17,6 @@ class MyRecipes extends AbstractController
    */
   public function __invoke(int $id): ?array
   {
-    return $this->rr->getMyRecipes($id);
+    return $this->recipeRepository->getMyRecipes($id);
   }
 }

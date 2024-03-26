@@ -7,7 +7,6 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 
@@ -15,7 +14,7 @@ class CreateAccount extends AbstractController
 {
   public function __construct(
     private readonly EntityManagerInterface $em,
-    private readonly UserRepository $ur,
+    private readonly UserRepository $userRepository,
   ) {
   }
 
@@ -32,7 +31,7 @@ class CreateAccount extends AbstractController
       throw new Exception('La clef secrète que vous avez renseigné est incorrecte.');
     }
 
-    if ($this->ur->findOneBy(['email' => $data->getEmail()])) {
+    if ($this->userRepository->findOneBy(['email' => $data->getEmail()])) {
       throw new Exception('Cette adresse email est déjà utilisée pour un autre compte');
     }
     $data->setPassword($passwordHasher->hash($data->getPassword()));

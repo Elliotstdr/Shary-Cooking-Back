@@ -15,7 +15,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class ResetPassword extends AbstractController
 {
   public function __construct(
-    private readonly UserRepository $ur,
+    private readonly UserRepository $userRepository,
     private readonly EntityManagerInterface $em,
     private readonly JWTTokenManagerInterface $JWTManager,
     private readonly NormalizerInterface $normalizer
@@ -30,7 +30,7 @@ class ResetPassword extends AbstractController
     ]);
     $pHasher = $factory->getPasswordHasher('common');
 
-    $user = $this->ur->findOneBy(['email' => $requestData["email"]]);
+    $user = $this->userRepository->findOneBy(['email' => $requestData["email"]]);
 
     if ($user && !$pHasher->verify($user->getResetPassword(), $requestData["resetKey"])) {
       throw new Exception("La clé de réinitialisation n'est pas correcte");
