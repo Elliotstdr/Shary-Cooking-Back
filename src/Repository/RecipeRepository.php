@@ -39,7 +39,11 @@ class RecipeRepository extends ServiceEntityRepository
         }
     }
 
-    public function getFavouriteRecipes(int $id)
+    /**
+     * @param integer $id
+     * @return Recipe[]|null
+     */
+    public function getFavouriteRecipes(int $id): ?array
     {
         return $this->createQueryBuilder('r')
             ->innerJoin('r.savedByUsers', 'sbu')
@@ -49,7 +53,11 @@ class RecipeRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function getMyRecipes(int $id)
+    /**
+     * @param integer $id
+     * @return Recipe[]|null
+     */
+    public function getMyRecipes(int $id): ?array
     {
         return $this->createQueryBuilder('r')
             ->where("r.postedByUser = :id")

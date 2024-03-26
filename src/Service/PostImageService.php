@@ -8,11 +8,11 @@ use Intervention\Image\ImageManagerStatic as Image;
 class PostImageService extends AbstractController
 {
   public function __construct(
-    private DeleteOldFileService $deleteOldFileService
+    private readonly DeleteOldFileService $deleteOldFileService
   ) {
   }
 
-  public function saveFile($file, $fileSize = 1200, $oldFilePath = null)
+  public function saveFile($file, $fileSize = 1200, $oldFilePath = null): string
   {
     $fileData = base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $file));
     $fileName = uniqid('', true) . '.jpg';

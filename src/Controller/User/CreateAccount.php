@@ -14,12 +14,12 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 class CreateAccount extends AbstractController
 {
   public function __construct(
-    private EntityManagerInterface $em,
-    private UserRepository $ur,
+    private readonly EntityManagerInterface $em,
+    private readonly UserRepository $ur,
   ) {
   }
 
-  public function __invoke(User $data, Request $request)
+  public function __invoke(User $data, Request $request): User
   {
     $requestData = json_decode($request->getContent(), true);
 

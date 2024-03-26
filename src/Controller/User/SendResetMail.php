@@ -14,13 +14,13 @@ use Symfony\Component\PasswordHasher\Hasher\PasswordHasherFactory;
 class SendResetMail extends AbstractController
 {
   public function __construct(
-    private UserRepository $ur,
-    private MailerInterface $mailer,
-    private EntityManagerInterface $em,
+    private readonly UserRepository $ur,
+    private readonly MailerInterface $mailer,
+    private readonly EntityManagerInterface $em,
   ) {
   }
 
-  public function __invoke(Request $request, MailerInterface $mailer): JsonResponse
+  public function __invoke(Request $request): JsonResponse
   {
     $response = "Un mail avec une clé de réinitialisation vous a été envoyé";
     $requestData = json_decode($request->getContent(), true);
@@ -46,7 +46,7 @@ class SendResetMail extends AbstractController
       ->subject('Réinitialisation de votre mot de passe')
       ->html("Voici votre clé de réinitialisation : <br> $resetKey");
 
-    $mailer->send($email);
+    $$this->mailer->send($email);
 
     return new JsonResponse($response);
   }

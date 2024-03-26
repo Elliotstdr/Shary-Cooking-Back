@@ -181,10 +181,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->savedRecipes;
     }
 
-    public function addSavedRecipe(Recipe $savedRecipe): self
+    /**
+     * @param Recipe|null $savedRecipe
+     * @return self
+     */
+    public function addSavedRecipe(?Recipe $savedRecipe): self
     {
         if (!$savedRecipe) {
-            return false;
+            return $this;
         }
         if (!$this->savedRecipes->contains($savedRecipe)) {
             $this->savedRecipes->add($savedRecipe);

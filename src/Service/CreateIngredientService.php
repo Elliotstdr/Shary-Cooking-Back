@@ -6,17 +6,15 @@ use App\Entity\Ingredient;
 use App\Entity\IngredientData;
 use App\Repository\IngredientDataRepository;
 use App\Repository\IngredientTypeRepository;
-use App\Repository\UnitRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CreateIngredientService extends AbstractController
 {
   public function __construct(
-    private EntityManagerInterface $em,
-    private UnitRepository $ur,
-    private IngredientDataRepository $idr,
-    private IngredientTypeRepository $itr,
+    private readonly EntityManagerInterface $em,
+    private readonly IngredientDataRepository $idr,
+    private readonly IngredientTypeRepository $itr,
   ) {
   }
 

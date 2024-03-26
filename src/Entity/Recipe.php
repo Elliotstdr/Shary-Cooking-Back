@@ -15,6 +15,7 @@ use App\Controller\Recipe\MyRecipes;
 use App\Controller\Recipe\PutRecipe;
 use App\Controller\Recipe\SaveRecipe;
 use App\Repository\RecipeRepository;
+use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -111,7 +112,7 @@ class Recipe
 
     #[ORM\Column(nullable: false)]
     #[Groups(['recipe:read', 'recipe:write', 'recipe:put'])]
-    private ?\DateTimeImmutable $createdAt = null;
+    private ?DateTimeImmutable $createdAt = null;
 
     public function __construct()
     {
@@ -242,7 +243,7 @@ class Recipe
         return $this;
     }
 
-    public function removeAllIngredients()
+    public function removeAllIngredients(): static
     {
         $this->ingredients->clear();
 
@@ -270,7 +271,7 @@ class Recipe
         return $this;
     }
 
-    public function removeAllSteps()
+    public function removeAllSteps(): static
     {
         $this->steps->clear();
 
@@ -301,12 +302,12 @@ class Recipe
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
 

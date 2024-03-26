@@ -16,14 +16,14 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 class PutRecipe extends AbstractController
 {
   public function __construct(
-    private EntityManagerInterface $em,
-    private PostImageService $pis,
-    private CreateIngredientService $cis,
-    private DenormalizerInterface $denormalizer
+    private readonly EntityManagerInterface $em,
+    private readonly PostImageService $pis,
+    private readonly CreateIngredientService $cis,
+    private readonly DenormalizerInterface $denormalizer
   ) {
   }
 
-  public function __invoke(Request $request, Recipe $data)
+  public function __invoke(Request $request, Recipe $data): Recipe
   {
     if ($data->getPostedByUser()->getEmail() === "test@test.com") {
       throw new Exception('Vous ne pouvez pas modifier cette recette avec un compte visiteur');

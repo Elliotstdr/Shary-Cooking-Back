@@ -8,13 +8,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class FavouriteRecipes extends AbstractController
 {
   public function __construct(
-    public RecipeRepository $rr
+    private readonly RecipeRepository $rr
   ) {
   }
   /**
    * @param int $id
+   * @return Recipe[]|null
    */
-  public function __invoke(int $id)
+  public function __invoke(int $id): ?array
   {
     return $this->rr->getFavouriteRecipes($id);
   }

@@ -10,7 +10,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 class UsersVoter extends Voter
 {
   public function __construct(
-    private UserRepository $userRepository
+    private readonly UserRepository $userRepository
   ) {
   }
 
@@ -26,7 +26,7 @@ class UsersVoter extends Voter
    * @param TokenInterface $token
    * @return bool
    */
-  protected function voteOnAttribute($attribute, $subject, TokenInterface $token): bool
+  protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
   {
     $user = $this->userRepository->find($subject);
     switch ($attribute) {

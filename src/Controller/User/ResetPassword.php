@@ -15,10 +15,10 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class ResetPassword extends AbstractController
 {
   public function __construct(
-    private UserRepository $ur,
-    private EntityManagerInterface $em,
-    private JWTTokenManagerInterface $JWTManager,
-    private NormalizerInterface $normalizer
+    private readonly UserRepository $ur,
+    private readonly EntityManagerInterface $em,
+    private readonly JWTTokenManagerInterface $JWTManager,
+    private readonly NormalizerInterface $normalizer
   ) {
   }
 

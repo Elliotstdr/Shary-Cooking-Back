@@ -5,7 +5,6 @@ namespace App\Controller\Recipe;
 use App\Entity\Ingredient;
 use App\Entity\Recipe;
 use App\Entity\Step;
-use App\Repository\RecipeRepository;
 use App\Service\CreateIngredientService;
 use App\Service\PostImageService;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,15 +16,14 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 class CreateRecipe extends AbstractController
 {
   public function __construct(
-    private EntityManagerInterface $em,
-    private RecipeRepository $rr,
-    private PostImageService $postImageService,
-    private CreateIngredientService $cis,
-    private DenormalizerInterface $denormalizer
+    private readonly EntityManagerInterface $em,
+    private readonly PostImageService $postImageService,
+    private readonly CreateIngredientService $cis,
+    private readonly DenormalizerInterface $denormalizer
   ) {
   }
 
-  public function __invoke(Request $request, Recipe $data)
+  public function __invoke(Request $request, Recipe $data): Recipe
   {
     if ($data->getPostedByUser()->getEmail() === "test@test.com") {
       throw new Exception('Vous ne pouvez pas créer de recette avec un compte visiteur');

@@ -16,14 +16,14 @@ use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 class PutUser extends AbstractController
 {
   public function __construct(
-    private PostImageService $pis,
-    private EntityManagerInterface $em,
-    private UserRepository $ur,
-    private JWTTokenManagerInterface $JWTManager
+    private readonly PostImageService $pis,
+    private readonly EntityManagerInterface $em,
+    private readonly UserRepository $ur,
+    private readonly JWTTokenManagerInterface $JWTManager
   ) {
   }
 
-  public function __invoke(Request $request, int $id)
+  public function __invoke(Request $request, int $id): JsonResponse
   {
     $requestData = json_decode($request->getContent(), true);
     $userToModify = $this->ur->find($id);

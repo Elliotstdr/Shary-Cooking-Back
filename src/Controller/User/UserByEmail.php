@@ -2,6 +2,7 @@
 
 namespace App\Controller\User;
 
+use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -9,17 +10,15 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 class UserByEmail extends AbstractController
 {
   public function __construct(
-    private TokenStorageInterface $tokenStorage,
-    private UserRepository $userRepository
+    private readonly TokenStorageInterface $tokenStorage,
+    private readonly UserRepository $userRepository
   ) {
   }
 
-  public function __invoke()
+  public function __invoke(): User
   {
     $tokenIdentifier = $this->tokenStorage->getToken()->getUserIdentifier();
 
-    $user = $this->userRepository->findOneBy(["email" => $tokenIdentifier]);
-
-    return $user;
+    return $this->userRepository->findOneBy(["email" => $tokenIdentifier]);
   }
 }

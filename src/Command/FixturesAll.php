@@ -7,16 +7,18 @@ use App\Entity\Regime;
 use App\Entity\Type;
 use App\Entity\Unit;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+#[AsCommand(
+  name: 'app:fixtures:all',
+  description: 'Load all fixtures',
+)]
 class FixturesAll extends Command
 {
-  protected static $defaultName = 'app:fixtures:all';
-  protected static $defaultDescription = 'Load all fixtures';
-
   public function __construct(
     private EntityManagerInterface $em,
   ) {
@@ -25,7 +27,6 @@ class FixturesAll extends Command
 
   protected function configure(): void
   {
-    $this->setDescription(self::$defaultDescription);
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int
