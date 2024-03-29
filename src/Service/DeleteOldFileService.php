@@ -7,12 +7,16 @@ use Symfony\Component\Filesystem\Filesystem;
 
 class DeleteOldFileService extends AbstractController
 {
-  public function __construct()
-  {
+  public function __construct(
+    private readonly string $hfUrl
+  ) {
   }
 
   public function deleteOldFile(string $oldFilePath)
   {
+    if (str_contains($oldFilePath, $this->hfUrl)) {
+      return;
+    }
     if ($oldFilePath) {
       $fileSystem = new Filesystem();
       $projectDir = $this->getParameter('kernel.project_dir');

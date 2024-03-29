@@ -48,7 +48,7 @@ class CreateRecipe extends AbstractController
 
     if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
       $fileName = $this->postImageService->saveFile($decodedResponse["image"]);
-      $data->setImageUrl('/media/' . $fileName);
+      $data->setImageUrl($fileName);
       $this->em->persist($data);
       $this->em->flush();
     }

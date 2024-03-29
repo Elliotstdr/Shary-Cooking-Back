@@ -47,7 +47,7 @@ class PutRecipe extends AbstractController
 
     if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
       $fileName = $this->postImageService->saveFile($decodedResponse["image"], 1200, $data->getImageUrl());
-      $data->setImageUrl('/media/' . $fileName);
+      $data->setImageUrl($fileName);
       $this->em->persist($data);
     }
 

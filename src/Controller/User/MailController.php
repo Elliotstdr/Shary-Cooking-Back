@@ -11,7 +11,8 @@ use Symfony\Component\Mime\Email;
 class MailController extends AbstractController
 {
   public function __construct(
-    private readonly MailerInterface $mailer
+    private readonly MailerInterface $mailer,
+    private readonly string $email
   ) {
   }
 
@@ -28,7 +29,7 @@ class MailController extends AbstractController
     // Envoyer l'e-mail
     $email = (new Email())
       ->from('no-reply@shary-cooking.fr')
-      ->to($_ENV['EMAIL'])
+      ->to($this->email)
       ->subject('Bug report')
       ->html("$firstname $lastname <br> Titre : $title <br> Message : $message");
 

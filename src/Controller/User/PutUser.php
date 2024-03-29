@@ -40,7 +40,7 @@ class PutUser extends AbstractController
 
     if (isset($requestData["image"]) && $requestData["image"]) {
       $fileName = $this->postImageService->saveFile($requestData["image"], 500, $userToModify->getImageUrl());
-      $userToModify->setImageUrl('/media/' . $fileName);
+      $userToModify->setImageUrl($fileName);
       $this->em->persist($userToModify);
     }
 
