@@ -25,11 +25,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(),
         new GetCollection(),
-        new Post(controller: CreateRecipe::class, inputFormats: ['json' => ['application/json']]),
+        new Post(
+            controller: CreateRecipe::class,
+            inputFormats: ['json' => ['application/json']],
+            security: "is_granted('NOT_GUEST', 0)",
+            securityMessage: "Vous ne pouvez pas créer de recette avec un compte visiteur"
+        ),
         new Put(
             controller: PutRecipe::class,
             inputFormats: ['json' => ['application/json']],
-            denormalizationContext: ['groups' => ['recipe:put']]
+            denormalizationContext: ['groups' => ['recipe:put']],
+            security: "is_granted('NOT_GUEST', id)",
+            securityMessage: "Vous ne pouvez pas modifier cette recette avec un compte visiteur"
         ),
         new Delete(),
         new Post(
@@ -43,7 +50,12 @@ use Symfony\Component\Serializer\Annotation\Groups;
             read: false,
             security: "is_granted('OWN', userId)"
         ),
-        new Post(uriTemplate: 'recipes/{id}/deletePicture', controller: DeletePicture::class),
+        new Post(
+            uriTemplate: 'recipes/{id}/deletePicture',
+            controller: DeletePicture::class,
+            security: "is_granted('NOT_GUEST', id)",
+            securityMessage: "Vous ne pouvez pas modifier cette recette avec un compte visiteur"
+        ),
     ],
     denormalizationContext: ['groups' => ['recipe:write']],
     normalizationContext: ['groups' => ['recipe:read']]

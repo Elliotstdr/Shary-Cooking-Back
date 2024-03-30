@@ -15,6 +15,7 @@ class CreateAccount extends AbstractController
   public function __construct(
     private readonly EntityManagerInterface $em,
     private readonly UserRepository $userRepository,
+    private readonly string $secretKey
   ) {
   }
 
@@ -27,7 +28,7 @@ class CreateAccount extends AbstractController
     ]);
     $passwordHasher = $factory->getPasswordHasher('common');
 
-    if (!$passwordHasher->verify($this->getParameter('secretKey'), $requestData["secretKey"])) {
+    if (!$passwordHasher->verify($this->secretKey, $requestData["secretKey"])) {
       throw new Exception('La clef secrète que vous avez renseigné est incorrecte.');
     }
 

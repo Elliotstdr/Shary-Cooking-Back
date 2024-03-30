@@ -16,13 +16,13 @@ class UsersVoter extends Voter
 
   protected function supports($attribute, $subject): bool
   {
-    $supportsAttribute = in_array($attribute, ['OWN']);
+    $supportsAttribute = in_array($attribute, ['OWN', 'NOT_GUEST']);
     return $supportsAttribute;
   }
 
   /**
    * @param string $attribute
-   * @param User $subject
+   * @param int $subject
    * @param TokenInterface $token
    * @return bool
    */
@@ -34,6 +34,9 @@ class UsersVoter extends Voter
         if ($user && $token->getUserIdentifier() === $user->getEmail()) {
           return true;
         }
+        break;
+      case 'NOT_GUEST':
+        return $token->getUserIdentifier() !== 'test@test.com';
         break;
     }
     return false;

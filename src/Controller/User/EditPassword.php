@@ -27,10 +27,6 @@ class EditPassword extends AbstractController
     ]);
     $passwordHasher = $factory->getPasswordHasher('common');
 
-    if ($userToModify->getEmail() === "test@test.com") {
-      throw new Exception('Vous ne pouvez pas modifier les informations du compte avec un compte visiteur');
-    }
-
     if (isset($requestData["oldPassword"])) {
       if (!$passwordHasher->verify($userToModify->getPassword(), $requestData["oldPassword"])) {
         throw new Exception('L\'ancien mot de passe est incorrect');

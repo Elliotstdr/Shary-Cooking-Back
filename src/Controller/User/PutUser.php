@@ -27,10 +27,6 @@ class PutUser extends AbstractController
     $requestData = json_decode($request->getContent(), true);
     $userToModify = $this->userRepository->find($id);
 
-    if ($userToModify->getEmail() === "test@test.com") {
-      throw new Exception('Vous ne pouvez pas modifier les informations du compte avec un compte visiteur');
-    }
-
     if (
       $userToModify->getEmail() !== $requestData["email"] &&
       $this->userRepository->findOneBy(['email' => $requestData["email"]])

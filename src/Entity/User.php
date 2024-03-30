@@ -39,14 +39,16 @@ use Symfony\Component\HttpFoundation\File\File;
             inputFormats: ['json' => ['application/json']],
             denormalizationContext: ['groups' => ['user:put']],
             read: false,
-            security: "is_granted('OWN', id)"
+            security: "is_granted('OWN', id) and is_granted('NOT_GUEST', id)",
+            securityMessage: "Ce compte n'est pas à vous ou est un compte visiteur"
         ),
         new Post(
             uriTemplate: 'users/edit_password/{id}',
             controller: EditPassword::class,
             inputFormats: ['json' => ['application/json']],
             read: false,
-            security: "is_granted('OWN', id)"
+            security: "is_granted('OWN', id) and is_granted('NOT_GUEST', id)",
+            securityMessage: "Ce compte n'est pas à vous ou est un compte visiteur"
         ),
         new Post(uriTemplate: 'users/by_email', controller: UserByEmail::class, read: false),
         new Post(uriTemplate: 'users/loginCheck', controller: LoginCheck::class),
