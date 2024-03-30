@@ -47,7 +47,11 @@ class CreateRecipe extends AbstractController
     $this->em->flush();
 
     if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
-      $fileName = $this->postImageService->saveFile($decodedResponse["image"]);
+      if ($data->isFromHellof()) {
+        $fileName = $decodedResponse["image"];
+      } else {
+        $fileName = $this->postImageService->saveFile($decodedResponse["image"]);
+      }
       $data->setImageUrl($fileName);
       $this->em->persist($data);
       $this->em->flush();

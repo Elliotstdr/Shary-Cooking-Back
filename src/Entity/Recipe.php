@@ -10,8 +10,7 @@ use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\ApiResource;
 use App\Controller\Recipe\CreateRecipe;
 use App\Controller\Recipe\DeletePicture;
-use App\Controller\Recipe\FavouriteRecipes;
-use App\Controller\Recipe\MyRecipes;
+use App\Controller\Recipe\FindHelloRecipes;
 use App\Controller\Recipe\PutRecipe;
 use App\Controller\Recipe\SaveRecipe;
 use App\Repository\RecipeRepository;
@@ -33,17 +32,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
             denormalizationContext: ['groups' => ['recipe:put']]
         ),
         new Delete(),
-        new Get(
-            uriTemplate: 'recipes/user_fav/{id}',
-            controller: FavouriteRecipes::class,
+        new Post(
+            uriTemplate: 'recipes/hellof',
+            controller: FindHelloRecipes::class,
             read: false,
-            security: "is_granted('OWN', id)"
-        ),
-        new Get(
-            uriTemplate: 'recipes/user/{id}',
-            controller: MyRecipes::class,
-            read: false,
-            security: "is_granted('OWN', id)"
         ),
         new Post(
             uriTemplate: 'recipes/{recipeId}/users/{userId}',
@@ -113,6 +105,10 @@ class Recipe
     #[ORM\Column(nullable: false)]
     #[Groups(['recipe:read', 'recipe:write', 'recipe:put'])]
     private ?DateTimeImmutable $createdAt = null;
+
+    #[Groups(['recipe:read', 'recipe:write', 'recipe:put'])]
+    #[ORM\Column(nullable: true)]
+    private ?bool $fromHellof = null;
 
     public function __construct()
     {
@@ -310,6 +306,18 @@ class Recipe
     public function setCreatedAt(DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function isFromHellof(): ?bool
+    {
+        return $this->fromHellof;
+    }
+
+    public function setFromHellof(?bool $fromHellof): static
+    {
+        $this->fromHellof = $fromHellof;
 
         return $this;
     }

@@ -45,7 +45,7 @@ class PutRecipe extends AbstractController
       $this->createIngredientService->createIngredient($ingredient, $data);
     }
 
-    if (isset($decodedResponse["image"]) && $decodedResponse["image"]) {
+    if (!$data->isFromHellof() && isset($decodedResponse["image"]) && $decodedResponse["image"]) {
       $fileName = $this->postImageService->saveFile($decodedResponse["image"], 1200, $data->getImageUrl());
       $data->setImageUrl($fileName);
       $this->em->persist($data);

@@ -12,9 +12,10 @@ services:
     autowire: true # Automatically injects dependencies in your services.
     autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
     bind:
-      $hfUrl: "%env(HF_URL)%"
+      $hfImageUrl: "%env(HF_IMAGE_URL)%"
       $email: "%env(EMAIL)%"
       $externalTokenUrl: "%env(EXTERNAL_TOKEN_URL)%"
+      $hfRecipeUrl: "%env(HF_RECIPE_URL)%"
 
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name

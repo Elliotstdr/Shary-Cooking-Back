@@ -39,33 +39,6 @@ class RecipeRepository extends ServiceEntityRepository
         }
     }
 
-    /**
-     * @param integer $id
-     * @return Recipe[]|null
-     */
-    public function getFavouriteRecipes(int $id): ?array
-    {
-        return $this->createQueryBuilder('r')
-            ->innerJoin('r.savedByUsers', 'sbu')
-            ->where("sbu.id = :id")
-            ->setParameter(':id', $id)
-            ->getQuery()
-            ->getResult();
-    }
-
-    /**
-     * @param integer $id
-     * @return Recipe[]|null
-     */
-    public function getMyRecipes(int $id): ?array
-    {
-        return $this->createQueryBuilder('r')
-            ->where("r.postedByUser = :id")
-            ->setParameter(':id', $id)
-            ->getQuery()
-            ->getResult();
-    }
-
     //    /**
     //     * @return Recipe[] Returns an array of Recipe objects
     //     */

@@ -26,6 +26,10 @@ class DeletePicture extends AbstractController
       throw new Exception("No recipe found");
     }
 
+    if ($recipe->isFromHellof()) {
+      throw new Exception("Picture delete not allowed");
+    }
+
     $this->deleteOldFileService->deleteOldFile($recipe->getImageUrl());
 
     $recipe->setImage(null);
