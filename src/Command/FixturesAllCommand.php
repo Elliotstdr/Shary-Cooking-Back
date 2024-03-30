@@ -17,16 +17,12 @@ use Symfony\Component\Console\Style\SymfonyStyle;
   name: 'app:fixtures:all',
   description: 'Load all fixtures',
 )]
-class FixturesAll extends Command
+class FixturesAllCommand extends Command
 {
   public function __construct(
     private EntityManagerInterface $em,
   ) {
     parent::__construct();
-  }
-
-  protected function configure(): void
-  {
   }
 
   protected function execute(InputInterface $input, OutputInterface $output): int

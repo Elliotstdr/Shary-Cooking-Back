@@ -14,9 +14,8 @@ services:
     bind:
       $hfUrl: "%env(HF_URL)%"
       $email: "%env(EMAIL)%"
+      $externalTokenUrl: "%env(EXTERNAL_TOKEN_URL)%"
 
-  App\Command\FixturesAll:
-    tags: ["console.command"]
   # makes classes in src/ available to be used as services
   # this creates a service per class whose id is the fully-qualified class name
   App\:

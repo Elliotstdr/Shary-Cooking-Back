@@ -53,6 +53,7 @@ security:
     - { path: ^/api/recipes, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api/ingredients, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api/steps, roles: IS_AUTHENTICATED_FULLY }
+    - { path: ^/api/external_tokens, roles: IS_AUTHENTICATED_FULLY }
     - { path: ^/api, roles: PUBLIC_ACCESS }
     # End JWT
 
