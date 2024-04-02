@@ -23,7 +23,7 @@ class FindHelloRecipes extends AbstractController
   {
     try {
       $currentTokens = $this->externalTokenRepository->findAll();
-      $decodedRequest = json_decode($request->getContent(), true);
+      $req = json_decode($request->getContent(), true);
 
       if (count($currentTokens) === 0) {
         throw new Exception;
@@ -33,7 +33,7 @@ class FindHelloRecipes extends AbstractController
 
       $query = $this->httpClient->request(
         'GET',
-        $this->hfRecipeUrl . '&q=' . $decodedRequest["search"],
+        $this->hfRecipeUrl . '&q=' . $req["search"],
         ['auth_bearer' => $token]
       );
 

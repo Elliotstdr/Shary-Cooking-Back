@@ -9,6 +9,7 @@ use App\Repository\IngredientDataRepository;
 use App\Repository\IngredientTypeRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class CreateIngredientService extends AbstractController
 {
@@ -16,33 +17,41 @@ class CreateIngredientService extends AbstractController
     private readonly EntityManagerInterface $em,
     private readonly IngredientDataRepository $ingredientDataRepository,
     private readonly IngredientTypeRepository $ingredientTypeRepository,
+    private readonly DenormalizerInterface $denormalizer
   ) {
   }
 
-  public function createIngredient(Ingredient $ingredientItem, Recipe $newRecipe)
+  public function createIngredient(array $decodedIngredients, Recipe $newRecipe): void
   {
-    $ingredientLabel = ucfirst(strtolower($ingredientItem->getLabel()));
-    $ingredientItem->setLabel(($ingredientLabel));
-    $ingredientItem->setRecipe($newRecipe);
+    /**
+     * @var Ingredient[]
+     */
+    $ingredients = $this->denormalizer->denormalize($decodedIngredients, Ingredient::class . "[]");
 
-    $searchedIngredient = $this->ingredientDataRepository->findOneBy(["name" => $ingredientLabel]);
-    if (!$searchedIngredient) {
-      $newIng = new IngredientData();
-      $newIng->setName($ingredientLabel);
-      $newIng->setType($this->ingredientTypeRepository->findOneBy(["label" => "unknown"]));
-      $newIng->setFrequency(1);
-      $this->em->persist($newIng);
-    } else {
-      $frequency = $searchedIngredient->getFrequency();
-      if ($frequency) {
-        $frequency += 1;
+    foreach ($ingredients as $ingredient) {
+      $ingredientLabel = ucfirst(strtolower($ingredient->getLabel()));
+      $ingredient->setLabel(($ingredientLabel));
+      $ingredient->setRecipe($newRecipe);
+
+      $searchedIngredient = $this->ingredientDataRepository->findOneBy(["name" => $ingredientLabel]);
+      if (!$searchedIngredient) {
+        $newIng = new IngredientData();
+        $newIng->setName($ingredientLabel);
+        $newIng->setType($this->ingredientTypeRepository->findOneBy(["label" => "unknown"]));
+        $newIng->setFrequency(1);
+        $this->em->persist($newIng);
       } else {
-        $frequency = 1;
+        $frequency = $searchedIngredient->getFrequency();
+        if ($frequency) {
+          $frequency += 1;
+        } else {
+          $frequency = 1;
+        }
+        $searchedIngredient->setFrequency($frequency);
+        $this->em->persist($searchedIngredient);
       }
-      $searchedIngredient->setFrequency($frequency);
-      $this->em->persist($searchedIngredient);
-    }
 
-    $this->em->persist($ingredientItem);
+      $this->em->persist($ingredient);
+    }
   }
 }
