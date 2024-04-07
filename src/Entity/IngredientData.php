@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ApiResource(
-    operations: [new Get(), new GetCollection()],
+    operations: [new Get(), new GetCollection(order: ["name" => "ASC"])],
     normalizationContext: ['groups' => ['ingdata:read']]
 )]
 #[ORM\Entity(repositoryClass: IngredientDataRepository::class)]

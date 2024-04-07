@@ -2,6 +2,7 @@
 
 namespace App\Controller\Recipe;
 
+use App\Entity\Recipe;
 use App\Repository\RecipeRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,7 +19,7 @@ class SaveRecipe extends AbstractController
   ) {
   }
 
-  public function __invoke(Request $request, int $userId, int $recipeId): JsonResponse
+  public function __invoke(Request $request, int $userId, int $recipeId): Recipe
   {
     $requestData = json_decode($request->getContent(), true);
     $recipe = $this->recipeRepository->find($recipeId);
@@ -35,6 +36,6 @@ class SaveRecipe extends AbstractController
     $this->em->persist($user);
     $this->em->flush();
 
-    return new JsonResponse("Success");
+    return $recipe;
   }
 }
