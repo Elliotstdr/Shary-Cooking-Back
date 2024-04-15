@@ -37,7 +37,6 @@ class RetrieveStaticDataController extends AbstractController
         $this->ingredientTypeRepository->findAll(),
         IngredientType::class . "[]",
         ['groups' => ['ingtype:read']]
-
       ),
       'units' => $this->normalizerInterface->normalize(
         $this->unitRepository->findAll(),

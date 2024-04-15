@@ -39,6 +39,22 @@ class RecipeRepository extends ServiceEntityRepository
         }
     }
 
+    /**
+     * @return Recipe[]|null
+     */
+    public function findTopRecipes(): array
+    {
+        return $this->createQueryBuilder('r')
+            ->select('r', 'COUNT(u.id) AS HIDDEN savedByCount')
+            ->leftJoin('r.savedByUsers', 'u')
+            ->groupBy('r.id')
+            ->having('savedByCount > 0')
+            ->orderBy('savedByCount', 'DESC')
+            ->setMaxResults(3)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Recipe[] Returns an array of Recipe objects
     //     */

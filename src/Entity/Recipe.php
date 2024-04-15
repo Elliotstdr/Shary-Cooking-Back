@@ -13,6 +13,7 @@ use App\Controller\Recipe\DeletePicture;
 use App\Controller\Recipe\FindHelloRecipes;
 use App\Controller\Recipe\PutRecipe;
 use App\Controller\Recipe\SaveRecipe;
+use App\Controller\Recipe\TopRecipes;
 use App\Repository\RecipeRepository;
 use DateTimeImmutable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -25,6 +26,10 @@ use Symfony\Component\Serializer\Annotation\Groups;
     operations: [
         new Get(),
         new GetCollection(),
+        new GetCollection(
+            uriTemplate: 'topRecipes/recipes',
+            controller: TopRecipes::class
+        ),
         new Post(
             controller: CreateRecipe::class,
             inputFormats: ['json' => ['application/json']],
