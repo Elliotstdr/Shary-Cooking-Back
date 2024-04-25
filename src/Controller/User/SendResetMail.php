@@ -46,7 +46,7 @@ class SendResetMail extends AbstractController
       ->subject('Réinitialisation de votre mot de passe')
       ->html("Voici votre clé de réinitialisation : <br> $resetKey");
 
-    $$this->mailer->send($email);
+    $this->mailer->send($email);
 
     return new JsonResponse($response);
   }

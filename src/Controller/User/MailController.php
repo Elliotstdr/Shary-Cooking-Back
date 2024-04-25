@@ -24,7 +24,7 @@ class MailController extends AbstractController
     $firstname = $requestData['firstname'];
     $lastname = $requestData['lastname'];
     $message = $requestData['message'];
-    $file = $requestData['file'];
+    $file = $requestData['image'];
 
     // Envoyer l'e-mail
     $email = (new Email())
